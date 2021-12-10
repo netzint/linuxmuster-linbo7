@@ -1,4 +1,4 @@
-linuxmuster-linbo7 (9.0.2-0) lmn71; urgency=low
+linuxmuster-linbo7 (9.0.2-0) bionic-testing; urgency=low
 
   * ni commit
   * linbo warmstart improvements (#24).
