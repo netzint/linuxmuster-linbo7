@@ -1,3 +1,12 @@
+linuxmuster-linbo7 (9.0.2-0) lmn71; urgency=low
+
+  * ni commit
+  * linbo warmstart improvements (#24).
+  * Finally fix #25: ntfsresize seems to not work anymore.
+  * Restore old gptlabel if disk uuid has not been saved yet (#26).
+
+ -- Andreas Till <andreas.till@netzint.de>  Fri, 19 Dec 2021 12:52:00 +0100
+
 linuxmuster-linbo7 (4.0.2-0) lmn71; urgency=low
 
   * linbo warmstart improvements (#24).
