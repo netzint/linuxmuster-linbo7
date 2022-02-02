@@ -1,3 +1,10 @@
+linuxmuster-linbo7 (9.0.8-0) bionic-testing; urgency=low
+
+  * ni commit
+  * Fix #49: Group specific start.conf is not downloaded on linbo client with capitalized name.
+
+ -- Andreas Till <andreas.till@netzint.de>  Wed, 02 Feb 2022 19:05:00 +0100
+
 linuxmuster-linbo7 (9.0.2-0) bionic-testing; urgency=low
 
   * ni commit
@@ -6,6 +13,50 @@ linuxmuster-linbo7 (9.0.2-0) bionic-testing; urgency=low
   * Restore old gptlabel if disk uuid has not been saved yet (#26).
 
  -- Andreas Till <andreas.till@netzint.de>  Fri, 19 Dec 2021 12:52:00 +0100
+
+linuxmuster-linbo7 (4.0.8-0) lmn71; urgency=low
+
+  * Fix #49: Group specific start.conf is not downloaded on linbo client with capitalized name.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 28 Jan 2022 15:53:59 +0000
+
+linuxmuster-linbo7 (4.0.7-0) lmn71; urgency=low
+
+  * Fix #48: syntax error in hostname and mac address queries.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 18 Jan 2022 12:34:00 +0100
+
+linuxmuster-linbo7 (4.0.6-0) lmn71; urgency=low
+
+  * Fix #44: Hyphen in hostname prevents loading the correct start.conf.
+  * Fix #46: Windows BSOD after image sync to nvme partition.
+  * Fix #47: get host data from ad instead of devices.csv.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 14 Jan 2022 17:04:18 +0000
+
+linuxmuster-linbo7 (4.0.5-0) lmn71; urgency=low
+
+  * kernel 5.10.89.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 4 Jan 2021 17:16:00 +0100
+
+linuxmuster-linbo7 (4.0.4-0) lmn71; urgency=low
+
+  * Fix #40: linbo_gui not downloaded on unregistered clients.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 28 Dec 2021 20:19:00 +0100
+
+linuxmuster-linbo7 (4.0.3-0) lmn71; urgency=low
+
+  * Fix #32: Add global.reg to linuxmuster-win.
+  * Fix #33: /dev/nbd0 disconnected Report.
+  * Fix #34: fullsync with ext4 Filesystems changed behavior.
+  * Fix #35: Change ntpd Parameter.
+  * Fix #36: Use qcow2 in examples.
+  * Fix #37: remove all deprecated opsi code.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 20 Dec 2021 15:00:00 +0100
+>>>>>>> upstream-lmn
 
 linuxmuster-linbo7 (4.0.2-0) lmn71; urgency=low
 
