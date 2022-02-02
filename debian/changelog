@@ -1,4 +1,4 @@
-linuxmuster-linbo7 (9.0.8-0) bionic-testing; urgency=low
+linuxmuster-linbo7 (9.0.8-0) lmn71; urgency=low
 
   * ni commit
   * Fix #49: Group specific start.conf is not downloaded on linbo client with capitalized name.
