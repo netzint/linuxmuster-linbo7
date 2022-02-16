@@ -1,3 +1,9 @@
+linuxmuster-linbo7 (14.0.9-1) lmn71; urgency=low
+
+  * readded multischool support
+
+ -- Andreas Till <andreas.till@netzint.de>  Wed, 16 Feb 2022 12:30:47 +0200
+
 linuxmuster-linbo7 (14.0.8-1) lmn71; urgency=low
 
   * ni Bump
