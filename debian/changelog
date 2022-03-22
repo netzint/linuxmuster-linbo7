@@ -1,4 +1,4 @@
-  linuxmuster-linbo7 (14.0.15-1) lmn71; urgency=low
+linuxmuster-linbo7 (14.0.15-1) lmn71; urgency=low
 
   * linbo_patch_registry: fix ControlSet path in  script, further improvements (see #50).
   * linbo_update_gui: improved network recognition (#57), fix cache handling regression (#58).
