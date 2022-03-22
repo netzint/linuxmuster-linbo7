@@ -1,0 +1,6 @@
+# chntpw build environment
+
+CHNTPWNAME="chntpw"
+CHNTPWURL="https://github.com/SlrG/$CHNTPWNAME"
+CHNTPWSRCDIR="$SRC/$CHNTPWNAME"
+CHNTPWBIN="$CHNTPWSRCDIR/build/reged.static"

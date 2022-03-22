@@ -1,3 +1,10 @@
+  linuxmuster-linbo7 (14.0.15-1) lmn71; urgency=low
+
+  * linbo_patch_registry: fix ControlSet path in  script, further improvements (see #50).
+  * linbo_update_gui: improved network recognition (#57), fix cache handling regression (#58).
+
+ -- Andreas Till <andreas.till@netzint.de>  Tue, 22 Mar 2022 16:53:47 +0200
+
 linuxmuster-linbo7 (14.0.9-1) lmn71; urgency=low
 
   * readded multischool support
@@ -31,6 +38,62 @@ linuxmuster-linbo7 (9.0.2-0) bionic-testing; urgency=low
   * Restore old gptlabel if disk uuid has not been saved yet (#26).
 
  -- Andreas Till <andreas.till@netzint.de>  Fri, 19 Dec 2021 12:52:00 +0100
+
+linuxmuster-linbo7 (4.0.15-0) lmn71-testing; urgency=low
+
+  * linbo_patch_registry: fix ControlSet path in  script, further improvements (see #50).
+  * linbo_update_gui: improved network recognition (#57), fix cache handling regression (#58).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 18 Mar 2022 15:18:00 +0100
+
+linuxmuster-linbo7 (4.0.14-1) lmn71-testing; urgency=low
+
+  * rebuild.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 17 Mar 2022 16:23:00 +0100
+
+linuxmuster-linbo7 (4.0.14-0) lmn71-testing; urgency=low
+
+  * linbo_update_gui: improved cache handling (#58).
+  * Fix #61: make ctorrent options configurable (related also to #60).
+  * Fix #39: torrent service should not run as root user.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 17 Mar 2022 15:54:00 +0100
+
+linuxmuster-linbo7 (4.0.13-0) lmn71-testing; urgency=low
+
+  * Completely refactored registry patching (#53).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 25 Feb 2022 17:38:00 +0100
+
+linuxmuster-linbo7 (4.0.12-0) lmn71-testing; urgency=low
+
+  * Fix #57: No gui in foreign network.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 24 Feb 2022 19:56:00 +0100
+
+linuxmuster-linbo7 (4.0.11-0) lmn71-testing; urgency=low
+
+  * Fix #56: Gui will not be downloaded after cache partition was formatted (final attempt).
+  * Reverted commits for #54.
+  * Refactored gui_ctl.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 23 Feb 2022 16:22:00 +0100
+
+linuxmuster-linbo7 (4.0.10-0) lmn71-testing; urgency=low
+
+  * Fix #56: Gui will not be downloaded after cache partition was formatted.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 23 Feb 2022 10:50:00 +0100
+
+linuxmuster-linbo7 (4.0.9-0) lmn71-testing; urgency=low
+
+  * Fix #52: linbo_cmd: add minus in regex for group name check.
+  * Fix #53: fix parts of the patch_registry script, use chntpw forked by SlrG (see #50).
+  * Fix #54: linbo-remote: allow to use -n without -c or -p.
+  * Fix #55: linbo-remote: readded multischool support.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 22 Feb 2022 19:53:00 +0100
 
 linuxmuster-linbo7 (4.0.8-0) lmn71; urgency=low
 
