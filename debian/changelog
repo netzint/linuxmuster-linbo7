@@ -1,3 +1,41 @@
+linuxmuster-linbo7 (14.0.21-1) lmn71; urgency=low
+
+  * unix2dos & sambadomain fix for windows regfiles in cache (f803a14).
+
+ -- Andreas Till <andreas.till@netzint.de>  Wed, 06 Apr 2022 14:18:47 +0200
+
+linuxmuster-linbo7 (4.0.21-0) lmn71; urgency=low
+
+  * unix2dos & sambadomain fix for windows regfiles in cache (f803a14).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 6 Apr 2022 14:10:00 +0200
+
+linuxmuster-linbo7 (4.0.20-0) lmn71; urgency=low
+
+  * ntfs resize fix.
+  * uefi boot improvements.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 5 Apr 2022 20:14:00 +0200
+
+ linuxmuster-linbo7 (4.0.19-0) lmn71; urgency=low
+
+   * Fix #66: Issue parsing Running Torrent Trackers.
+
+  -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 4 Apr 2022 12:38:00 +0200
+
+ linuxmuster-linbo7 (4.0.18-0) lmn71; urgency=low
+
+   * Fix recognition of "PXE IP4" uefi boot entry.
+
+  -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 1 Apr 2022 20:52:00 +0200
+
+linuxmuster-linbo7 (4.0.17-0) lmn71; urgency=low
+
+  * Merged #64: Added basic multischoolsupport in linbo_helperfunctions.sh.
+  * Fixed win10.image.reg template (see #50).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 25 Mar 2022 15:52:00 +0100
+
 linuxmuster-linbo7 (4.0.16-3) lmn71-testing; urgency=low
 
   * linbo_patch_registry: fix case of several registry strings (see #50).
@@ -51,11 +89,13 @@ linuxmuster-linbo7 (9.0.2-0) bionic-testing; urgency=low
   * Restore old gptlabel if disk uuid has not been saved yet (#26).
 
  -- Andreas Till <andreas.till@netzint.de>  Fri, 19 Dec 2021 12:52:00 +0100
+
 linuxmuster-linbo7 (4.0.16-0) lmn71-testing; urgency=low
 
-  * linbo_patch_registry: fix case of several registry strings (see #50).
+  * fix case of registry patch strings (see #50).
+  * fix plymouth output of registry patching.
 
- -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 24 Mar 2022 10:29:00 +0100
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 24 Mar 2022 22:57:00 +0100
 
 linuxmuster-linbo7 (4.0.15-0) lmn71-testing; urgency=low
 
