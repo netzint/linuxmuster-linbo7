@@ -1,3 +1,9 @@
+linuxmuster-linbo7 (14.0.23-1) lmn71; urgency=low
+
+  * Bump
+
+ -- Andreas Till <andreas.till@netzint.de>  Tue, 10 May 2022 09:10:08 +0200
+
 linuxmuster-linbo7 (14.0.22-1) lmn71; urgency=low
 
   * Reverse commit with other macct filena
