@@ -1,3 +1,9 @@
+linuxmuster-linbo7 (14.0.22-1) lmn71; urgency=low
+
+  * Reverse commit with other macct filena
+
+ -- Andreas Till <andreas.till@netzint.de>  Tue, 10 May 2022 09:09:20 +0200
+
 linuxmuster-linbo7 (14.0.21-1) lmn71; urgency=low
 
   * unix2dos & sambadomain fix for windows regfiles in cache (f803a14).
