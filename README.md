@@ -93,8 +93,9 @@ The command `linuxmuster-import-devices` writes the parameters into the grub con
 Option  |  Description
 --|--
 forcegrub  |  Forces grub boot on uefi systems (in case of uefi boot issues).
-quiet  |  Suppresses kernel boot messages.
+noefibootmgr  |  Skips providing the EFI boot files and boot entries (in case of uefi boot issues).
 splash  |  Displays graphical splash screen at boot time. Without this parameter, only text is displayed on the console at boot time.
+quiet  |  Suppresses kernel boot messages.
 warmstart=no  |  Suppresses linbo warmstart after downloading a new linbo kernel from the server (in case this causes problems).
 
 ### Linbo services
@@ -195,3 +196,26 @@ The commands were sent per ssh to the linbo_wrapper on the client and processed
 in the order given on the commandline.
 create_* and upload_* commands cannot be used with hostlists, -r and -g options.
 ```
+
+#### linbo-mkgrubimg
+creates hostspecific custom grub boot images to workaround buggy (UEFI-)BIOSes, which fail to netboot:
+```
+Purpose: linbo-mkgrubimg creates host specific image for grub network
+boot and stores it in /srv/linbo/boot/grub/hostcfg/<hostname>.img.
+Usage: linbo-mkgrubimg [options]
+ [options] may be:
+ -h,            --help                : print this help.
+ -n <hostname>, --name=<hostname>     : hostname for which an image will be
+                                        created.
+ -s,            --setfilename         : sets filename option in dhcpd.conf and
+                                        workstations file.
+ -w <file>,     --workstations=<file> : path to workstations file, default is
+                                        /etc/linuxmuster/sophomorix
+                                        /default-school/devices.csv.
+```
+
+Note:
+  * The `setfilename` option alters 2 files:
+    - adds an entry `filename "boot/grub/hostcfg/<hostname>.img"` in the 8th field of the host's line in `/etc/linuxmuster/sophomorix/default-school/devices.csv`,
+    - changes `filename` entry in `/etc/dhcp/devices/default-school.conf` accordingly.
+  * To get rid of these changes simply remove the filename entry in `devices.csv` and invoke `linuxmuster-import-devices`.
