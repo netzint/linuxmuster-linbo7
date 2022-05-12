@@ -1,3 +1,9 @@
+linuxmuster-linbo7 (14.1.1-0) lmn71; urgency=low
+
+  * bump build 20.04
+
+ -- Andreas Till <andreas.till@netzint.de>  Thu, 12 May 2022 10:46:52 +0200
+
 linuxmuster-linbo7 (14.1.0-0) lmn71; urgency=low
 
   * merged differential imaging from branch diffimage (cc78fd7...8969db1).
