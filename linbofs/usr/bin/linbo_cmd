@@ -2904,7 +2904,7 @@ syncr(){
   if remote_cache "$2"; then
     echo "Cache $2 is not local, skipping remote image update."
   else
-    linbo_mountcache "$2" || return 1
+    mountcache "$2" || return 1
     cd /cache
     local RC="0"
     # try to download baseimage
@@ -2915,7 +2915,7 @@ syncr(){
       download_img_if_changed "$1" "$imagediff" || rm -f "$imagediff"*
     fi
     sendlog
-    cd / ; linbo_mountcache "$2" -r
+    cd / ; mountcache "$2" -r
     # don't sync local if download of baseimage failed
     [ "$RC" = "1" ] && return 1
     # Also update LINBO, while we are here.
