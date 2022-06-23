@@ -1330,7 +1330,8 @@ mk_boot(){
     fi
   fi
   # umount efi partition if mounted
-  [ -n "$efipart" ] && umount /cache/boot/efi || RC="1"
+  # TODO: do this right...
+  [ -n "$efipart" ] && umount /cache/boot/efi
   return "$RC"
 }
 
