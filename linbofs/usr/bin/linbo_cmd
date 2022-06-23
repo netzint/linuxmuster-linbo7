@@ -1330,8 +1330,13 @@ mk_boot(){
     fi
   fi
   # umount efi partition if mounted
-  # TODO: do this right...
-  [ -n "$efipart" ] && umount /cache/boot/efi
+  
+  # This is original, but does not work on bios systems
+  # [ -n "$efipart" ] && umount /cache/boot/efi
+  
+  # This now work on efi and bios systems
+  if [ -n "$efipart" ]; then umount /cache/boot/efi || RC="1"; fi
+  
   return "$RC"
 }
 
