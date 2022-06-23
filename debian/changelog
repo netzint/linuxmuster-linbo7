@@ -1,3 +1,9 @@
+linuxmuster-linbo7 (14.0.24-1) lmn71; urgency=low
+
+  * updated kernel to 5.17.11
+
+ -- Andreas Till <andreas.till@netzint.de>  Thu, 23 Jun 2022 17:51:47 +0200
+
 linuxmuster-linbo7 (14.0.23-1) lmn71; urgency=low
 
   * Bump
