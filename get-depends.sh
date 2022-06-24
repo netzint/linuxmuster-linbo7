@@ -13,7 +13,9 @@ if [ -z "$SUDO" ]; then
 fi
 
 PKGNAME="linuxmuster-linbo7"
-CONTROL_URL="https://raw.githubusercontent.com/linuxmuster/$PKGNAME/main/debian/control"
+PROVIDER="netzint"
+BRANCH="lmn71"
+CONTROL_URL="https://raw.githubusercontent.com/$PROVIDER/$PKGNAME/$BRANCH/debian/control"
 
 echo "###############################################"
 echo "# Installing $PKGNAME build depends #"
