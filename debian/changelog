@@ -1,3 +1,9 @@
+linuxmuster-linbo7 (14.0.25-1) lmn71; urgency=low
+
+  * Fixed bug inumounting $efipart on bios systems
+
+ -- Andreas Till <andreas.till@netzint.de>  Fri, 24 Jun 2022 10:08:38 +0200
+
 linuxmuster-linbo7 (14.0.24-1) lmn71; urgency=low
 
   * updated kernel to 5.17.11
