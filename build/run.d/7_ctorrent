@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# download and build ctorrent
+
+# read build environment
+for i in build/conf.d/*; do source "$i" || exit 1; done
+
+# check for binary
+if [ -s "$CTORRENTBIN" -a -x "$CTORRENTBIN" ]; then
+  echo "ctorrent binary exists, skipping build."
+
+else
+  # download
+  echo "Cloning $CTORRENTNAME source ..."
+  [ -d "$CTORRENTSRCDIR" ] && rm -rf "$CTORRENTSRCDIR"
+  cd "$SRC"
+  git clone "$CTORRENTURL" || exit 1
+  # compile
+  echo "Configuring $CTORRENTNAME ..."
+  cd "$CHNTPWSRCDIR" || exit 1
+  ./configure || exit 1
+  echo "Compiling $CTORRENTNAME ..."
+  cd "$CHNTPWSRCDIR" || exit 1
+  make || exit 1
+  strip "$CTORRENTBIN" || exit 1
+fi
