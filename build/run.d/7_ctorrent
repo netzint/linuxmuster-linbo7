@@ -17,10 +17,10 @@ else
   git clone "$CTORRENTURL" || exit 1
   # compile
   echo "Configuring $CTORRENTNAME ..."
-  cd "$CHNTPWSRCDIR" || exit 1
+  cd "$CTORRENTSRCDIR" || exit 1
   ./configure || exit 1
   echo "Compiling $CTORRENTNAME ..."
-  cd "$CHNTPWSRCDIR" || exit 1
+  cd "$CTORRENTSRCDIR" || exit 1
   make || exit 1
   strip "$CTORRENTBIN" || exit 1
 fi
