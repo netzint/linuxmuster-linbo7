@@ -1,3 +1,9 @@
+linuxmuster-linbo7 (14.0.26-1) lmn71; urgency=low
+
+  * compile ctorrent for bigger torrent files
+
+ -- Andreas Till <andreas.till@netzint.de>  Tue, 26 Jul 2022 13:11:15 +0200
+
 linuxmuster-linbo7 (14.0.25-1) lmn71; urgency=low
 
   * Fixed bug inumounting $efipart on bios systems
