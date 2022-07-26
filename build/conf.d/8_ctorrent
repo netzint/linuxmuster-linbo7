@@ -1,6 +1,6 @@
 # ctorrent build environment
 
-CTORRENTNAME="ctorrrent"
+CTORRENTNAME="ctorrent"
 CTORRENTURL="https://github.com/netzint/$CTORRENTNAME"
 CTORRENTSRCDIR="$SRC/$CTORRENTNAME"
 CTORRENTBIN="$CTORRENTSRCDIR/$CTORRENTNAME"
