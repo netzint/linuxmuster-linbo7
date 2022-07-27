@@ -20,7 +20,8 @@ else
   cd "$CTORRENTSRCDIR" || exit 1
   # touch files to update timestamp so aclocal.m4 doesn't need to be rebuild
   touch aclocal.m4 configure Makefile.am Makefile.in || exit 1
-  ./configure || exit 1
+  # configure with-ssl=no ->  use builtin (Steve Reid's public-domain) SHA-1 code
+  ./configure --with-ssl=no || exit 1
   echo "Compiling $CTORRENTNAME ..."
   cd "$CTORRENTSRCDIR" || exit 1
   make || exit 1
