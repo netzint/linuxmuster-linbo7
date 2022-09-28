@@ -1,10 +1,4 @@
-linuxmuster-linbo7 (14.0.38-0) lmn71-testing; urgency=low
-
-  * linbo_cmd fix: start() returns 1 if no kernel was given (2804e63).
-  * Update kernel to 5.10.143 (f7b7666).
-
- -- Andreas Till <andreas.till@netzint.de>  Wed, 28 Sep 2022 09:42:00 +0200
-
+<<<<<<< HEAD
 linuxmuster-linbo7 (14.0.26-1) lmn71; urgency=low
 
   * compile ctorrent for bigger torrent files
@@ -40,7 +34,7 @@ linuxmuster-linbo7 (14.0.21-1) lmn71; urgency=low
   * unix2dos & sambadomain fix for windows regfiles in cache (f803a14).
 
  -- Andreas Till <andreas.till@netzint.de>  Wed, 06 Apr 2022 14:18:47 +0200
-
+=======
 linuxmuster-linbo7 (4.0.38-0) lmn71; urgency=low
 
   * linbo_cmd fix: start() returns 1 if no kernel was given (2804e63).
@@ -166,7 +160,7 @@ linuxmuster-linbo7 (4.0.23-0) lmn71; urgency=low
    * use linbo warmstart also for uefi systems (0053aa9).
 
   -- Thomas Schmitt <thomas@linuxmuster.net>  Sun, 10 Apr 2022 15:06:00 +0200
-
+>>>>>>> upstream-lmn7.1
 
 linuxmuster-linbo7 (4.0.21-0) lmn71; urgency=low
 
@@ -361,6 +355,7 @@ linuxmuster-linbo7 (4.0.3-0) lmn71; urgency=low
   * Fix #37: remove all deprecated opsi code.
 
  -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 20 Dec 2021 15:00:00 +0100
+>>>>>>> upstream-lmn
 
 linuxmuster-linbo7 (4.0.2-0) lmn71; urgency=low
 
