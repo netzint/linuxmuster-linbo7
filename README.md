@@ -1,10 +1,10 @@
 <img src="https://raw.githubusercontent.com/linuxmuster/linuxmuster-artwork/master/linbo/linbo_logo_small.svg" alt="linbo icon" width="200"/>
 
 # linuxmuster-linbo7 (next generation)
- is the free and opensource imaging solution for linuxmuster.net 7. It handles Windows 10 and Linux 64bit operating systems. Via TFTP and Grub's PXE implementation it boots a small linux system (linbofs) with a [gui](https://github.com/linuxmuster/linuxmuster-linbo-gui), which can manage all the imaging tasks on the client. Console tools are also available to manage clients and imaging remotely via the server.
+ is the free and opensource imaging solution for linuxmuster.net 7.1. It handles Windows 10 and Linux 64bit operating systems. Via TFTP and Grub's PXE implementation it boots a small linux system (linbofs) with a [gui](https://github.com/linuxmuster/linuxmuster-linbo-gui), which can manage all the imaging tasks on the client. Console tools are also available to manage clients and imaging remotely via the server.
 
 ## Important notices:
-* Currently the code in this repo is not for production use.
+* This is the production branch 4.0 for linuxmuster-linbo7 4.0.* to use with linuxmuster.net 7.1.
 * There is only a linuxmuster-linbo7 package, the linuxmuster-linbo-common7 package is deprecated and will be removed on dist-upgrade.
 * In spite of former [linuxmuster-linbo](https://github.com/linuxmuster/linuxmuster-linbo) images in cloop format where only supported for restore.
 * For image creation only qcow2 format is supported. You have to change the baseimage name in the start.conf accordingly (e.g. image.qcow2).
@@ -13,7 +13,7 @@
 * Only 64bit client hardware is supported.
 * No more support for linuxmuster.net <=6.2.
 * No differential imaging yet.
-* Packages were published in the [lmn7-testing repository](http://archive.linuxmuster.net/lmn7-testing/).
+* Packages were published in the [lmn71 repository](https://github.com/linuxmuster/deb).
 
 ## Migration
 * Add the new lmn71 repo according to this instruction https://github.com/linuxmuster/deb/blob/main/README.md#setup
@@ -51,13 +51,6 @@
 * images are placed in subdirectories of /srv/linbo/images.
 * More performant image deployment based on ctorrent and [opentracker](https://erdgeist.org/arts/software/opentracker/).
 
-## In planning:
-* start.conf in yaml format.
-* step by step changeover of the scripting to python.
-* differential imaging.
-* switch to new ntfs3 kernel driver.
-* secure boot support.
-
 ## Build environment
 
 ### Source tree structure
@@ -81,18 +74,20 @@
 * Build package:
   `./buildpackage.sh`
 
-Or for better convenience use the new [linbo-build-docker](https://github.com/linuxmuster/linbo-build-docker) environment.
+Or for better convenience use the 18.04 branch of the [linbo-build-docker](https://github.com/linuxmuster/linbo-build-docker/tree/18.04) environment.
 
 ## Usage infos
 
 ### Kernel parameters
 
-are defined in the start.conf file (see [examples](https://github.com/linuxmuster/linuxmuster-linbo7/tree/main/serverfs/srv/linbo/examples)) of the hardware group:
+are defined in the start.conf file (see [examples](https://github.com/linuxmuster/linuxmuster-linbo7/tree/4.0/serverfs/srv/linbo/examples)) of the hardware group:
 `KernelOptions = quiet splash`
 The command `linuxmuster-import-devices` writes the parameters into the grub configuration of the hardware group.
-Option  |  Description
+Parameter  |  Description
 --|--
 forcegrub  |  Forces grub boot on uefi systems (in case of uefi boot issues).
+noefibootmgr  |  Skips providing the EFI boot files and boot entries (in case of uefi boot issues).
+loadmodules=mod1,mod2,...  |  List of kernel modules to load on boot.
 quiet  |  Suppresses kernel boot messages.
 splash  |  Displays graphical splash screen at boot time. Without this parameter, only text is displayed on the console at boot time.
 warmstart=no  |  Suppresses linbo warmstart after downloading a new linbo kernel from the server (in case this causes problems).
@@ -195,3 +190,26 @@ The commands were sent per ssh to the linbo_wrapper on the client and processed
 in the order given on the commandline.
 create_* and upload_* commands cannot be used with hostlists, -r and -g options.
 ```
+
+#### linbo-mkgrubimg
+creates hostspecific custom grub boot images to workaround buggy (UEFI-)BIOSes, which fail to netboot:
+```
+Purpose: linbo-mkgrubimg creates host specific image for grub network
+boot and stores it in /srv/linbo/boot/grub/hostcfg/<hostname>.img.
+Usage: linbo-mkgrubimg [options]
+ [options] may be:
+ -h,            --help                : print this help.
+ -n <hostname>, --name=<hostname>     : hostname for which an image will be
+                                        created.
+ -s,            --setfilename         : sets filename option in dhcpd.conf and
+                                        workstations file.
+ -w <file>,     --workstations=<file> : path to workstations file, default is
+                                        /etc/linuxmuster/sophomorix
+                                        /default-school/devices.csv.
+```
+
+Note:
+  * The `setfilename` option alters 2 files:
+    - adds an entry `filename "boot/grub/hostcfg/<hostname>.img"` in the 8th field of the host's line in `/etc/linuxmuster/sophomorix/default-school/devices.csv`,
+    - changes `filename` entry in `/etc/dhcp/devices/default-school.conf` accordingly.
+  * To get rid of these changes simply remove the filename entry in `devices.csv` and invoke `linuxmuster-import-devices`.

@@ -6,7 +6,7 @@
 # ssd/4k/8k support - jonny@bzt.de 06.11.2012 anpassung fuer 2.0.12
 #
 # thomas@linuxmuster.net
-# 20220406
+# 20220920
 # GPL v3
 #
 
@@ -964,33 +964,42 @@ create_efiboot(){
   local label="$1"
   local efipart="$2"
   local efipartnr="$(get_partnr "$efipart")"
+  local efidisk="$(get_disk_from_partition "$efipart")"
   local efiloader
   local bits
   case "$label" in
     *[Ww][Ii][Nn][Dd][Oo][Ww][Ss]*) efiloader="\\EFI\\Microsoft\\Boot\\bootmgfw.efi" ;;
-    grub)
-      bits="$(get_64)"
-      [ -z "$bits" ] && bits="32"
-      efiloader="\\EFI\\grub\\grubx${bits}.efi"
-      ;;
-    *) return 1 ;;
+    grub) efiloader="\\EFI\\grub\\grubx64.efi" ;;
+    *) echo "Unknown efiloader: $efiloader." ; return 1 ;;
   esac
-  efibootmgr --create --disk "$efidisk" --part "$efipartnr" --loader "$efiloader" --label "$label" 2>> /tmp/linbo.log 1>> /tmp/linbo.log || return 1
+  if efibootmgr --create --disk "$efidisk" --part "$efipartnr" --loader "$efiloader" --label "$label" 2>> /tmp/linbo.log 1>> /tmp/linbo.log; then
+    echo "EFI boot entry for $label successfully created."
+  else
+    echo "Failed to create EFI boot entry for $label."
+    return 1
+  fi
 }
 
 # set_efibootnext: creates efi bootnext entry
 # args: bootloaderid
 set_efibootnext(){
   local bootloaderid="$1"
+  local RC="0"
   forcegrub && bootloaderid="grub"
   # get the bootnr
   local bootnextnr="$(print_efi_bootnr "$bootloaderid")"
   if [ -n "$bootnextnr" ]; then
-    echo "Setze EFI BootNext: $bootnextnr."
-    efibootmgr --bootnext "$bootnextnr" 2>> /tmp/linbo.log 1>> /tmp/linbo.log || return 1
+    if efibootmgr --bootnext "$bootnextnr" 2>> /tmp/linbo.log 1>> /tmp/linbo.log; then
+      echo "EFI bootnext for $bootloaderid has been set to $bootnextnr."
+    else
+      echo "Failed to set boot no. for $bootloaderid to $bootnextnr."
+      RC="1"
+    fi
   else
-    return 1
+    echo "Failed to get boot no. for $bootloaderid."
+    RC="1"
   fi
+  return "$RC"
 }
 
 # set_efibootorder: set the boot order to local,network
@@ -999,6 +1008,7 @@ set_efibootorder(){
   efibootmgr | grep ^Boot | grep -vi ipv6 > "$efiout"
   local i
   local nr
+  local RC="0"
   local bootorder
   # fix bootnext in case of KVM virtualization
   if dmesg | grep -qw KVM; then
@@ -1016,9 +1026,16 @@ set_efibootorder(){
     fi
   done
   if [ -n "$bootorder" ]; then
-    echo "Setze EFI Bootreihenfolge: $bootorder."
-    efibootmgr --bootorder "$bootorder" 2>> /tmp/linbo.log 1>> /tmp/linbo.log || return 1
+    if efibootmgr --bootorder "$bootorder" 2>> /tmp/linbo.log 1>> /tmp/linbo.log; then
+      echo "EFI bootorder has been successfully set."
+    else
+      echo "Failed to set EFI bootorder."
+      RC="1"
+    fi
   fi
+  # remove dups
+  efibootmgr -D || RC="1"
+  return "$RC"
 }
 
 # repair_efi: sets efi configuration into a proper state
@@ -1091,17 +1108,17 @@ mk_winefiboot(){
     # restore bcd and efiboot files on efi partition
     local win_bcd="$(ls "$win_bootdir"/[Bb][Cc][Dd] 2> /dev/null)"
     if [ -n "$win_bcd" ]; then
-      local win_efidir="$(ls -d /boot/efi/[Ee][Ff][Ii]/[Mm][Ii][Cc][Rr][Oo][Ss][Oo][Ff][Tt]/[Bb][Oo][Oo][Tt] 2> /dev/null)"
+      local win_efidir="$(ls -d /cache/boot/efi/[Ee][Ff][Ii]/[Mm][Ii][Cc][Rr][Oo][Ss][Oo][Ff][Tt]/[Bb][Oo][Oo][Tt] 2> /dev/null)"
       if [ -z "$win_efidir" ]; then
-        win_efidir="/boot/efi/EFI/Microsoft/Boot"
+        win_efidir="/cache/boot/efi/EFI/Microsoft/Boot"
         mkdir -p "$win_efidir"
       fi
       # copy whole windows efi stuff to efi partition
-      echo "Restoring windows bootfiles on efi partition."
+      echo "Restoring windows bootfiles on EFI partition."
       rsync -r "$win_bootdir/" "$win_efidir/"
     fi
   else
-    echo "Failed to restore windows efi bootfiles."
+    echo "Failed to restore windows EFI bootfiles."
     RC="1"
   fi
   # create efi bootloader entry if missing
@@ -1149,19 +1166,26 @@ mk_efiboot(){
   else # assume linux system
     bootloaderid="$(osname "$partition")"
     if [ -n "$bootloaderid" ]; then
-      mk_linefiboot "$partition" "$grubdisk" "$efipart" "$bootloaderid" || RC="1"
+      if ! mk_linefiboot "$partition" "$grubdisk" "$efipart" "$bootloaderid"; then
+        echo "Failed to update linux EFI boot configuration."
+        RC="1"
+      fi
     fi
   fi
   # install default efi boot file
   local grubefi="/boot/efi/EFI/grub/grubx64.efi"
   if [ -s "$grubefi" ]; then
-    echo "Stelle EFI-Standardboot wieder her."
     local efibootdir="$(ls -d /boot/efi/EFI/B[Oo][Oo][Tt] 2>/dev/null)"
     [ -z "$efibootdir" ] && efibootdir="/boot/efi/EFI/BOOT"
     local bootefi="$(ls $efibootdir/[Bb][Oo][Oo][Tt][Xx]64.[Ee][Ff][Ii] 2>/dev/null)"
     [ -z "$bootefi" ] && bootefi="$efibootdir/BOOTX64.EFI"
     mkdir -p "$efibootdir"
-    rsync "$grubefi" "$bootefi" || RC="1"
+    if ! rsync "$grubefi" "$bootefi"; then
+      echo "Failed to restore EFI standard boot."
+      RC="1"
+    else
+      echo "Successfully restored efi standard boot."
+    fi
   fi
   # set efi bootnext entry if invoked by start()
   if [ -e "$startflag" -a -n "$bootloaderid" ]; then
@@ -1171,8 +1195,8 @@ mk_efiboot(){
     # cause another grub-install
     [ "$RC" = "0" ] && rm -f "$doneflag"
   fi
-  [ "$RC" = "1" ] && echo "Fehler beim Schreiben der EFI-Boot-Konfiguration."
-  # force grub reboot id kerneloption is set
+  [ "$RC" = "1" ] && echo "Failed to write EFI boot configuration."
+  # force grub reboot if forcegrub kerneloption is set
   forcegrub && RC="1"
   return "$RC"
 }
@@ -1330,8 +1354,9 @@ mk_boot(){
     fi
   fi
   # umount efi partition if mounted
-  if [ -n "$efipart" ]; then umount /cache/boot/efi || RC="1"; fi
-
+  if [ -n "$efipart" ]; then
+    umount /cache/boot/efi || RC="1"
+  fi
   return "$RC"
 }
 
@@ -1438,14 +1463,15 @@ start(){
   # if no kernel is given, do not start
   if [ -z "$3" ]; then
     echo "There is nothing to start!"
-    return 0
+    return 1
   fi
   local INITRD
   local APPEND
-  local KERNEL="${3#/}"
-  local warmstart="no"
-  local i
   local partition="$2"
+  local KERNEL="${3#/}"
+  local i
+  local warmstart
+  for i in `cat /proc/cmdline`; do case "$i" in warmstart=*) eval $i ;; esac; done
   local label="$(print_partlabel "$partition")"
   local cachedev="$6"
   local mntpnt="/mnt"
@@ -1464,23 +1490,21 @@ start(){
       else
         APPEND="root=$partition $APPEND"
       fi
-      # test for warmstart boot parameter, if not linbo reboot and not efi
-      if [ "$partition" != "$cachedev" -a -z "$efi" ]; then
-        warmstart="yes"
-        for i in `cat /proc/cmdline`; do case "$i" in warmstart=*) eval $i ;; esac; done
-      fi
+      # no warmstart, if start partition is cache
+      [ "$partition" = "$cachedev" ] && warmstart="no"
       # load kernel for later warmstart
-      if [ "$warmstart" != "no" ]; then
-        kexec --type="bzImage" --append="$APPEND" --initrd="/mnt/$INITRD" --load "/mnt/$KERNEL" && warmstart="yes"
+      if [ -z "$warmstart" ]; then
+        kexec --type="bzImage64" --append="$APPEND" --initrd="/mnt/$INITRD" --load "/mnt/$KERNEL" || warmstart="no"
       fi
     else
       echo "No kernel $KERNEL on partition $partition. Using \"auto\"."
       KERNEL="auto"
+      warmstart="no"
     fi
     # install/update grub/efi stuff if cache is mounted
     if mountcache "$cachedev"; then
       # prepare reboot if no warmstart
-      [ "$warmstart" = "no" ] && mk_boot "$partition" "$KERNEL" "$INITRD" "$APPEND" | tee -a /tmp/linbo.log
+      [ -z "$warmstart" ] || mk_boot "$partition" "$KERNEL" "$INITRD" "$APPEND" | tee -a /tmp/linbo.log
       # update linuxmuster-win scripts and install start tasks
       [ "$(fstype "$partition")" = "ntfs" -a -d /cache/linuxmuster-win ] && update_win "$partition" | tee -a /tmp/linbo.log
     fi
@@ -1513,7 +1537,7 @@ start(){
   umount /mnt 2>> /tmp/linbo.log
   sendlog
   # start os directly or reboot into it
-  if [ "$warmstart" != "no" ]; then
+  if [ -z "$warmstart" ]; then
     kexec -e
   else
     reboot -f
@@ -2607,7 +2631,7 @@ download_img_if_changed(){
   localmode && return 0
   local server="$1"
   local imagefile="$2"
-  local imagebase="$(echo "$imagefile" | awk -F\. '{print $1}')"
+  local imagebase="$(basename "$imagefile" | sed 's/\(.*\)\..*/\1/')"
   local subdir="images/$imagebase/"
   local infofile="${imagefile}.info"
   local dltype="$3"
@@ -3030,10 +3054,6 @@ initcache(){
   cd /cache
   shift; shift; shift
 
-  # clean up obsolete linbofs files
-  rm -f linbofs64.lz*
-  rm -f linbo64*
-
   # clean up obsolete image files
   used_images="$(grep -i ^baseimage /start.conf | awk -F\= '{ print $2 }' | awk '{ print $1 }')"
   #used_images="$used_images $(grep -i ^image /start.conf | awk -F\= '{ print $2 }' | awk '{ print $1 }')"
@@ -3060,6 +3080,7 @@ initcache(){
   done
 
   # linbo & gui update
+  rm -f /tmp/.update.done
   update "$server" "$cachedev"
   linbo_update_gui
 }

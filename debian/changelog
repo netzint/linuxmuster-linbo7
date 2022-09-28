@@ -1,3 +1,10 @@
+linuxmuster-linbo7 (4.0.38-0) lmn71-testing; urgency=low
+
+  * linbo_cmd fix: start() returns 1 if no kernel was given (2804e63).
+  * Update kernel to 5.10.143 (f7b7666).
+
+ -- Andreas Till <andreas.till@netzint.de>  Wed, 28 Sep 2022 09:42:00 +0200
+
 linuxmuster-linbo7 (14.0.26-1) lmn71; urgency=low
 
   * compile ctorrent for bigger torrent files
@@ -34,11 +41,140 @@ linuxmuster-linbo7 (14.0.21-1) lmn71; urgency=low
 
  -- Andreas Till <andreas.till@netzint.de>  Wed, 06 Apr 2022 14:18:47 +0200
 
+linuxmuster-linbo7 (4.0.38-0) lmn71; urgency=low
+
+  * linbo_cmd fix: start() returns 1 if no kernel was given (2804e63).
+  * Update kernel to 5.10.143 (f7b7666).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 20 Sep 2022 12:13:00 +0200
+
+linuxmuster-linbo7 (4.0.37-0) lmn71; urgency=low
+
+  * linbo_remote:
+    - reimplement -u option for use of broadcast address with wol (#77, b5b780c).
+    - remove obsolete commands from KNOWNCMDS (545dbc3).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 12 Sep 2022 20:01:00 +0200
+
+linuxmuster-linbo7 (4.0.36-0) lmn71; urgency=low
+
+  * Fix image directory in rsync-pre-download.sh (#82).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 9 Sep 2022 09:26:00 +0200
+
+linuxmuster-linbo7 (4.0.35-0) lmn71; urgency=low
+
+  * Fix #82: .macct file doesnt get uploaded when imagename contains dots (c93c44c).
+  * Update kernel to 5.10.142 (7679afc).
+  * Fix multicast restart in rsync-post-upload.sh (bd7bc65).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 8 Sep 2022 19:04:00 +0200
+
+linuxmuster-linbo7 (4.0.34-0) lmn71; urgency=low
+
+  * Fix initcache does not update linbo kernel & initrd (197f7cc).
+  * Update kernel to 5.10.141 (37e01d8).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 6 Sep 2022 22:06:00 +0200
+
+linuxmuster-linbo7 (4.0.33-0) lmn71; urgency=low
+
+  * Fix download error with imagefilename containing dots (7f15ee4).
+  * update kernel to 5.10.136 (31b6a85).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 18 Aug 2022 20:40:00 +0200
+
+linuxmuster-linbo7 (4.0.32-0) lmn71; urgency=low
+
+  * Fix typo in linbo-remote.sh (922175a).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 5 Aug 2022 20:45:00 +0200
+
+linuxmuster-linbo7 (4.0.31-0) lmn71; urgency=low
+
+  * helperfunctions.sh: fixed broadcast address is not recognized as valid ip in some cases (2be903e).
+  * update kernel to 5.10.135 (68eb91d).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 3 Aug 2022 23:29:00 +0200
+
+linuxmuster-linbo7 (4.0.30-0) lmn71; urgency=low
+
+  * Improved mac address handling in linbo-remote (4ee69c0).
+  * Update kernel to 5.10.134 (3400ee0).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Sat, 30 Jul 2022 15:14:00 +0200
+
+linuxmuster-linbo7 (4.0.29-0) lmn71; urgency=low
+
+  * linbo-remote wake-on-lan fixes (see #77).
+  * removed libdevmapper-dev from build deps.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 15 Jul 2022 15:58:00 +0200
+
+linuxmuster-linbo7 (4.0.28-0) lmn71; urgency=low
+
+  * linbo_cmd, start(): changed kexec type to bzImage64 (f38f683).
+  * Refactor linbo warmstart (aa42b23, 4f29b4b).
+  * Update kernel to 5.10.123 (b7b27d2).
+  * Add r8168 module (336d81f).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 17 Jun 2022 17:47:00 +0200
+
+linuxmuster-linbo7 (4.0.27-0) lmn71; urgency=low
+
+  * Fix restore of windows efi boot files (#70).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 5 May 2022 10:15:00 +0200
+
+linuxmuster-linbo7 (4.0.26-0) lmn71; urgency=low
+
+  * Revert "Fix restore of windows efi boot files (#70)",
+    reverts commit ac816c4592378f742458f77c7dbae635c186fe56.
+  * Revert "Further UEFI optimations (#70)",
+    reverts commit 9de4fec8a716a15e4d42875a3ca61ba4d58667f7.
+  * Revert "Improvement: Clean up invalid UEFI entries (#70)",
+    reverts commit 17921f3de8f7922b3a3c8ade7e44aea57e102735.
+  * Revert "Fix #70: Clean up invalid UEFI entries",
+    reverts commit 05193cca7aeb9a93a0648ae7830cd73b0c3f653e.
+  * UEFI fixes, increased verbosity, more english translations (#70).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 4 May 2022 13:09:00 +0200
+
+linuxmuster-linbo7 (4.0.25-0) lmn71; urgency=low
+
+  * Fix restore of windows efi boot files (#70).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 26 Apr 2022 21:17:00 +0200
+
+linuxmuster-linbo7 (4.0.24-0) lmn71; urgency=low
+
+  * Fix #70: Clean up invalid UEFI entries.
+  * dhcp client fix for mkgrubhostimg.py (d8c1e77).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 25 Apr 2022 14:10:00 +0200
+
+linuxmuster-linbo7 (4.0.23-0) lmn71; urgency=low
+
+  * multi-school fix for mkgrubhostimg.py (d84d57b).
+  * link mkgrubhostimg.py to /usr/sbin/linbo-mkgrubimg (f96c109).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 14 Apr 2022 10:39:00 +0200
+
+ linuxmuster-linbo7 (4.0.22-0) lmn71; urgency=low
+
+   * Fix #67: Linbo7 assumes wrong macct name (closes also #68).
+   * use linbo warmstart also for uefi systems (0053aa9).
+
+  -- Thomas Schmitt <thomas@linuxmuster.net>  Sun, 10 Apr 2022 15:06:00 +0200
+
+
 linuxmuster-linbo7 (4.0.21-0) lmn71; urgency=low
 
   * unix2dos & sambadomain fix for windows regfiles in cache (f803a14).
+  * linbo_warmstart: removed reboot in case of warmstart is not intended (503c829).
+  * Fix grub update on bios systems (10e9045).
 
- -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 6 Apr 2022 14:10:00 +0200
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 8 Apr 2022 19:02:00 +0200
 
 linuxmuster-linbo7 (4.0.20-0) lmn71; urgency=low
 
@@ -225,7 +361,6 @@ linuxmuster-linbo7 (4.0.3-0) lmn71; urgency=low
   * Fix #37: remove all deprecated opsi code.
 
  -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 20 Dec 2021 15:00:00 +0100
->>>>>>> upstream-lmn
 
 linuxmuster-linbo7 (4.0.2-0) lmn71; urgency=low
 

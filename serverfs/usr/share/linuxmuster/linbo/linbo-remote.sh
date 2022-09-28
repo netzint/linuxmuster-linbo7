@@ -3,14 +3,14 @@
 # exec linbo commands remote per ssh
 #
 # thomas@linuxmuster.net
-# 20220114
+# 20220912
 # GPL V3
 #
 
 # read linuxmuster environment
 source /usr/share/linuxmuster/linbo/helperfunctions.sh || exit 1
 
-KNOWNCMDS="label partition format initcache sync start create_image create_rsync upload_image upload_rsync reboot halt"
+KNOWNCMDS="label partition format initcache sync start create_image upload_image reboot halt"
 DLTYPES="multicast rsync torrent"
 SSH="/usr/sbin/linbo-ssh -o BatchMode=yes -o StrictHostKeyChecking=no"
 SCP=/usr/sbin/linbo-scp
@@ -45,11 +45,11 @@ usage(){
   echo " -r <room>          All hosts of this room will be processed."
   echo " -p <cmd1,cmd2,...> Create an onboot command file executed automatically"
   echo "                    once next time the client boots."
+  echo " -u                 Use broadcast address for wol additionally."
   echo " -w <sec>           Send wake-on-lan magic packets to the client(s)"
   echo "                    and wait <sec> seconds before executing the"
   echo "                    commands given with \"-c\" or in case of \"-p\" after"
   echo "                    the creation of the pxe boot files."
-  echo " -u                 Use broadcast address with wol."
   echo " -s                 Select a school other than default-school"
   echo
   echo "Important: * Options \"-r\", \"-g\" and \"-i\" exclude each other, \"-c\" and"
@@ -126,7 +126,7 @@ while getopts ":b:c:dg:hi:lnp:r:uw:s:" opt; do
         [ -n "$IP" ] && HOSTNAME="$(nslookup "$IP" 2> /dev/null | head -1 | awk '{ print $4 }' | awk -F\. '{ print $1 }' | sed "s/^$SCHOOL-//g")"
         if [ -n "$HOSTNAME" ]; then
           # check for pxe flag, only use linbo related pxe flags 1 & 2
-          pxe="$(grep -i ^[a-z0-9] $WIMPORTDATA | grep ";$HOSTNAME;" | awk -F\; '{ print $11 }')"
+          pxe="$(grep -i ^[a-z0-9] $WIMPORTDATA | grep -i ";$HOSTNAME;" | awk -F\; '{ print $11 }')"
           if [ "$pxe" != "1" -a "$pxe" != "2" ]; then
             echo "Skipping $i, not a pxe host!"
             continue
@@ -145,7 +145,7 @@ while getopts ":b:c:dg:hi:lnp:r:uw:s:" opt; do
     g) GROUP=$OPTARG ;;
     p) ONBOOT=$OPTARG  ;;
     r) ROOM=$OPTARG ;;
-    u) USEBCADDR=yes ;;
+    u) USEBCADDR=yes;;
     w) WAIT=$OPTARG
       isinteger "$WAIT" || usage ;;
     n) NOAUTO=yes ;;
@@ -411,26 +411,35 @@ if [ -n "$WAIT" ]; then
   for i in $HOSTS; do
     [ -n "$BETWEEN" -a "$c" != "0" ] && do_wait between
     echo -n " $i ... "
+    # strip school from hostname
+    host="$(echo "$i" | sed "s|^$SCHOOL-||")"
     # get mac address of client from devices.csv
-    macaddr="$(get_mac "$(echo $i | sed "s/^$SCHOOL-//g")")"
-    ipaddr="$(get_ip "$(echo $i | sed "s/^$SCHOOL-//g")")"
-    # use broadcast address
+    macaddr="$(get_mac "$host")"
+    # get ip address of host
+    ipaddr="$(get_ip "$host")"
+    validip "$ipaddr" || ipaddr="$(arp -a "$host" | awk -F\( '{print $2}' | awk -F\) '{print $1}')"
+    # check mac address
+    validmac "$macaddr" || macaddr="$(get_mac_dhcp "$ipaddr")"
     if [ -n "$USEBCADDR" ]; then
-      if validip "$i"; then
-        hostip="$i"
-      else
-        hostip="$(get_ip "$i")"
-      fi
-      bcaddr=$(get_bcaddress "$hostip")
-      [ -n "$bcaddr" ] && WOL="$WOL -i $bcaddr"
+      # get broadcast address
+      validip "$ipaddr" && bcaddr=$(get_bcaddress "$ipaddr")
+      # create wol command if broadcast address is valid
+      validip "$bcaddr" && WOL="$WOL -i $bcaddr"
     fi
 
-    [ -n "$DIRECT" ] && $WOL "$macaddr"
+    if [ -n "$DIRECT" ]; then
+      if validmac "$macaddr"; then
+        $WOL "$macaddr"
+      else
+        echo "$macaddr is no valid mac address!"
+        continue
+      fi
+    fi
     if [ -n "$ONBOOT" ]; then
       # reboot linbo-clients which are already online
-      if is_online "$i"; then
+      if is_online "$host"; then
         echo "Client is already online, rebooting ..."
-        $SSH "$i" reboot &> /dev/null
+        $SSH "$host" reboot &> /dev/null
       else
         $WOL "$macaddr"
       fi
