@@ -24,7 +24,7 @@ jobs:
         run: ./buildpackage.sh
 
       - name: Copy artifacts
-        run: mkdir package && cp ../linuxmuster-linbo7_* ./package
+        run: mkdir package && cp ../linuxmuster-cachingserver-linbo7_* ./package
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
