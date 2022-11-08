@@ -12,10 +12,11 @@ if [ -z "$SUDO" ]; then
   exit 1
 fi
 
-PKGNAME="linuxmuster-linbo7"
+PKGNAME="linuxmuster-cachingserver-linbo7"
 PROVIDER="netzint"
-BRANCH="lmn71"
-CONTROL_URL="https://raw.githubusercontent.com/$PROVIDER/$PKGNAME/$BRANCH/debian/control"
+BRANCH="lmn71-cachingserver-testing"
+GITHUB_REPO="linuxmuster-linbo7"
+CONTROL_URL="https://raw.githubusercontent.com/$PROVIDER/$GITHUB_REPO/$BRANCH/debian/control"
 
 echo "###############################################"
 echo "# Installing $PKGNAME build depends #"
