@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# postinst script for linuxmuster-linbo7
+# postinst script for linuxmuster-cachingserver-linbo7
 # thomas@linuxmuster.net
 # 20210514
 #
