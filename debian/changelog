@@ -1,3 +1,9 @@
+linuxmuster-cachingserver-linbo7 (14.0.39-0) lmn71-testing; urgency=low
+
+  * removed dependency for linuxmuster-base
+
+ -- Andreas Till <andreas.till@netzint.de>  Wed, 09 Nov 2022 11:35:50 +0200
+
 linuxmuster-cachingserver-linbo7 (14.0.38-0-c) lmn71-testing; urgency=low
 
   * initial testing package.
