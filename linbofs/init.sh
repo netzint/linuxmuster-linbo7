@@ -594,8 +594,9 @@ network(){
     export server
     print_status "linbo_server='$server'" >> /tmp/dhcp.log
     print_status "Loading configuration files from $server ..."
+    hostgroup="`grep ^nisdomain /tmp/dhcp.log | tail -1 | cut -f2 -d"'"`"
     # request host specific start.conf from server
-    rsync -L "$server::linbo/tmp/start.conf_$hostname" "/start.conf" &> /dev/null
+    rsync -L "$server::linbo/tmp/start.conf.$hostgroup" "/start.conf" &> /dev/null
     # set flag for working network connection and do additional stuff which needs
     # connection to linbo server
     if [ -s /start.conf ]; then

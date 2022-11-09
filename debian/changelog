@@ -1,4 +1,10 @@
-linuxmuster-cachingserver-linbo7 (14.0.39-0) lmn71-testing; urgency=low
+linuxmuster-cachingserver-linbo7 (14.0.40-0) lmn71-testing; urgency=low
+
+  * Get linbo group from dhcp nisdomain instead of asking server
+
+ -- Andreas Till <andreas.till@netzint.de>  Wed, 09 Nov 2022 17:35:44 +0200
+
+linuxmuster-cachingserver-linbo7 (14.0.39-0-c) lmn71-testing; urgency=low
 
   * removed dependency for linuxmuster-base
 
