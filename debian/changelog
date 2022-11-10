@@ -1,3 +1,9 @@
+linuxmuster-cachingserver-linbo7 (14.0.42-0-c) lmn71-testing; urgency=low
+
+  * added constants.py and defaults.sh to linbo-cachingserver package
+
+ -- Andreas Till <andreas.till@netzint.de>  Thu, 10 Nov 2022 17:43:50 +0200
+
 linuxmuster-cachingserver-linbo7 (14.0.41-0-c) lmn71-testing; urgency=low
 
   * added dhcp client asking for nisdomain, fixed start.conf path on server
