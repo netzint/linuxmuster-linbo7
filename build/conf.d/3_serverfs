@@ -21,6 +21,7 @@ SRVFS_DIRS="
 /usr/lib/linuxmuster/setup.d
 /usr/sbin
 /usr/share/linuxmuster/linbo/templates
+/usr/lib/linuxmuster/
 /var/cache/linuxmuster/linbo
 /var/lib/linuxmuster/linbo
 /var/log/linuxmuster/linbo
