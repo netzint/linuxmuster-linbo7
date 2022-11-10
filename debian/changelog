@@ -1,3 +1,9 @@
+linuxmuster-cachingserver-linbo7 (14.0.43-0-c) lmn71-testing; urgency=low
+
+  * Use serverid instead of linbo_server in invoke_macct.
+
+ -- Andreas Till <andreas.till@netzint.de>  Thu, 10 Nov 2022 19:17:31 +0200
+
 linuxmuster-cachingserver-linbo7 (14.0.42-0-c) lmn71-testing; urgency=low
 
   * added constants.py and defaults.sh to linbo-cachingserver package
