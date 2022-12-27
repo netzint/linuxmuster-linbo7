@@ -1,3 +1,10 @@
+linuxmuster-linbo7 (14.0.38-0) lmn71; urgency=low
+
+  * linbo_cmd fix: start() returns 1 if no kernel was given (2804e63).
+  * Update kernel to 5.10.143 (f7b7666).
+
+ -- Andreas Till <andreas.till@netzint.de>  Wed, 28 Sep 2022 09:42:00 +0200
+
 linuxmuster-linbo7 (14.0.38-0) lmn71-testing; urgency=low
 
   * linbo_cmd fix: start() returns 1 if no kernel was given (2804e63).
