@@ -1,36 +1,4 @@
-linuxmuster-linbo7 (14.0.43-0) lmn71-testing; urgency=low
-
-  * Merged Upstream 4.0.43-0
-
- -- Andreas Till <andreas.till@netzint.de>  Tue, 27 Dec 2022 18:37:35 +0200
-
-linuxmuster-linbo7 (4.0.42-0) lmn71; urgency=low
-
-  * Fix #86: add --skip-compress parameter to rsync commands to avoid compression of already compressed files (d11ae44).
-  * Update kernel to 5.10.158 (08f60b1).
-
- -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 12 Dec 2022 18:31:00 +0100
-
-linuxmuster-linbo7 (4.0.41-0) lmn71; urgency=low
-
-  * move linbo_gui theming update to linbo_update_gui (2baa737, #84).
-  * remove obsolete fbsplash code from init.sh (5027240).
-
- -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 6 Oct 2022 15:56:00 +0200
-
-linuxmuster-linbo7 (4.0.40-0) lmn71; urgency=low
-
-  * Another fix for linbo_gui theming update in linbo_cmd (e6a1d9a, ff4de2e, #84).
-
- -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 5 Oct 2022 20:43:00 +0200
-
-linuxmuster-linbo7 (4.0.39-0) lmn71; urgency=low
-
-  * Fix linbo_gui theming update in linbo_cmd (4afe1e4).
-  * Update kernel to 5.10.146 (a7b88ff).
-
- -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 4 Oct 2022 16:13:00 +0200
-
+<<<<<<< HEAD
 linuxmuster-linbo7 (14.0.38-0) lmn71-testing; urgency=low
 
   * linbo_cmd fix: start() returns 1 if no kernel was given (2804e63).
@@ -73,7 +41,34 @@ linuxmuster-linbo7 (14.0.21-1) lmn71; urgency=low
   * unix2dos & sambadomain fix for windows regfiles in cache (f803a14).
 
  -- Andreas Till <andreas.till@netzint.de>  Wed, 06 Apr 2022 14:18:47 +0200
+=======
+linuxmuster-linbo7 (4.0.42-0) lmn71; urgency=low
 
+  * Fix #86: add --skip-compress parameter to rsync commands to avoid compression of already compressed files (d11ae44).
+  * Update kernel to 5.10.158 (08f60b1).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 12 Dec 2022 18:31:00 +0100
+
+linuxmuster-linbo7 (4.0.41-0) lmn71; urgency=low
+
+  * move linbo_gui theming update to linbo_update_gui (2baa737, #84).
+  * remove obsolete fbsplash code from init.sh (5027240).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 6 Oct 2022 15:56:00 +0200
+
+linuxmuster-linbo7 (4.0.40-0) lmn71; urgency=low
+
+  * Another fix for linbo_gui theming update in linbo_cmd (e6a1d9a, ff4de2e, #84).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 5 Oct 2022 20:43:00 +0200
+
+linuxmuster-linbo7 (4.0.39-0) lmn71; urgency=low
+
+  * Fix linbo_gui theming update in linbo_cmd (4afe1e4).
+  * Update kernel to 5.10.146 (a7b88ff).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 4 Oct 2022 16:13:00 +0200
+>>>>>>> upstream-lmn7.1
 
 linuxmuster-linbo7 (4.0.38-0) lmn71; urgency=low
 
