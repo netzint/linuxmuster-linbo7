@@ -1,6 +1,7 @@
-linuxmuster-linbo7 (14.1.0-1) lmn72-testing; urgency=low
+linuxmuster-linbo7 (14.1.0-2) lmn72-testing; urgency=low
 
   * try to fix depency error
+  * cleaned orig files
 
  -- Andreas Till <andreas.till@netzint.de>  Fri, 24 Feb 2023 11:30:04 +0200
 
