@@ -1,7 +1,15 @@
 #!/bin/bash
 #
 # thomas@linuxmuster.net
+<<<<<<< HEAD
+# 20220908
+=======
+# 20220327
+>>>>>>> upstream-lmn7.2
+#
+
 # read in linuxmuster specific environment
+source /usr/share/linuxmuster/linbo/helperfunctions.sh || exit 1
 
 # where to place the temporary image backup
 BAKTMP="$LINBOIMGDIR/tmp"
@@ -46,7 +54,11 @@ if [ -s "$BACKUP" ]; then
   if [ "$RSYNC_EXIT_STATUS" = "0" ]; then
     echo "Upload of $BASENAME was successful." >&2
     case "$EXT" in
+<<<<<<< HEAD
+      qcow2)
+=======
       *.qcow2|*.qdiff)
+>>>>>>> upstream-lmn7.2
         # qcow2 is the first file of image upload, so place backup file in temporary dir
         # cause without info file we don't know the timestamp
         mkdir -p "$BAKTMP"
@@ -99,7 +111,11 @@ fi
 # do something depending on file type
 case "$EXT" in
 
+<<<<<<< HEAD
+  qcow2)
+=======
   *.qcow2|*.qdiff)
+>>>>>>> upstream-lmn7.2
     # restart multicast service if image file was uploaded.
     echo "Image file $BASENAME detected. Restarting multicast service if enabled." >&2
     linbo-multicast restart >&2

@@ -1,7 +1,11 @@
 # kernel build environment variables
 
 # kernel version
+<<<<<<< HEAD
+KVERS="5.17.11"
+=======
 KVERS="5.17.2"
+>>>>>>> upstream-lmn7.2
 
 # kernel archive and get script
 KDIR="linux-$KVERS"

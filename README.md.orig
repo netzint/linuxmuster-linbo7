@@ -51,6 +51,8 @@
 * images are placed in subdirectories of /srv/linbo/images.
 * More performant image deployment based on ctorrent and [opentracker](https://erdgeist.org/arts/software/opentracker/).
 
+<<<<<<< HEAD
+=======
 ## In planning:
 * start.conf in yaml format.
 * step by step changeover of the scripting to python.
@@ -58,6 +60,7 @@
 * switch to new ntfs3 kernel driver.
 * secure boot support.
 
+>>>>>>> upstream-lmn7.2
 ## Build environment
 
 ### Source tree structure
@@ -87,7 +90,11 @@ Or for better convenience use the 18.04 branch of the [linbo-build-docker](https
 
 ### Kernel parameters
 
+<<<<<<< HEAD
+are defined in the start.conf file (see [examples](https://github.com/linuxmuster/linuxmuster-linbo7/tree/4.0/serverfs/srv/linbo/examples)) of the hardware group:
+=======
 are defined in the start.conf file (see [examples](https://github.com/linuxmuster/linuxmuster-linbo7/tree/main/serverfs/srv/linbo/examples)) of the hardware group:
+>>>>>>> upstream-lmn7.2
 `KernelOptions = quiet splash`
 The command `linuxmuster-import-devices` writes the parameters into the grub configuration of the hardware group.
 Parameter  |  Description

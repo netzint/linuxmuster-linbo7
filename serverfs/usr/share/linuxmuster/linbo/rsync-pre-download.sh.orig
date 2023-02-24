@@ -2,7 +2,11 @@
 #
 # Pre-Download script for rsync/LINBO
 # thomas@linuxmuster.net
+<<<<<<< HEAD
+# 20220909
+=======
 # 20220327
+>>>>>>> upstream-lmn7.2
 #
 
 # read in linuxmuster specific environment

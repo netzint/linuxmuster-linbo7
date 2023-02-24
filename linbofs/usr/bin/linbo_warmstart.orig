@@ -2,7 +2,11 @@
 #
 # linbo_warmstart <cachedevice>
 # thomas@linuxmuster.net
+<<<<<<< HEAD
+# 20220506
+=======
 # 20220410
+>>>>>>> upstream-lmn7.2
 #
 
 if [ -n "$1" ]; then
@@ -30,6 +34,11 @@ for i in $APPEND; do case "$i" in warmstart=*) eval $i ;; esac; done
 if [ "$warmstart" = "no" ]; then
   echo "Skipping linbo warmstart."
   exit 0
+<<<<<<< HEAD
+else
+  echo "Initiating linbo warmstart ..."
+=======
+>>>>>>> upstream-lmn7.2
 fi
 
 cd /
