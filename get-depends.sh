@@ -33,6 +33,9 @@ fi
 $SUDO apt-get update && $SUDO apt-get -y dist-upgrade
 $SUDO apt-get -y install bash bash-completion ccache curl dpkg-dev || exit 1
 
+# clean config.dat
+$SUDO rm /var/cache/debconf/config.dat
+
 # install build depends
 BUILDDEPENDS="$(sed -n '/Build-Depends:/,/Package:/p' debian/control | grep -v ^Package | sed -e 's|^Build-Depends: ||' | sed -e 's|,||g')"
 $SUDO apt-get -y install $BUILDDEPENDS || exit 1
