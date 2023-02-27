@@ -1,8 +1,10 @@
 #!/bin/bash
 #
 # thomas@linuxmuster.net
-# 20220511
+# 20220624
 #
+
+set -o pipefail
 
 MY_DIR="$(dirname $0)"
 cd "$MY_DIR"
@@ -21,3 +23,5 @@ dpkg-buildpackage \
     -Isrc \
     -Ibuild.log \
     -Itmp 2>&1 | tee ../build.log
+
+exit $?

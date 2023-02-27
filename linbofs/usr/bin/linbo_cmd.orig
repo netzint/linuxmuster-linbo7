@@ -1,19 +1,13 @@
 #!/bin/sh
-# linbo_cmd - Backend worker script for LINBO
-# (C) Klaus Knopper 2007-2010
 #
-# ssd/4k/8k support - jonny@bzt.de 30.09.2012 alpha!
-# ssd/4k/8k support - jonny@bzt.de 06.11.2012 anpassung fuer 2.0.12
+# linbo_cmd - collects all linbo commands for compatibility with legacy linbo_cmd
 #
 # thomas@linuxmuster.net
-<<<<<<< HEAD
-# 20221212
-=======
-# 20220504
->>>>>>> upstream-lmn7.2
+# 20220605
 # GPL v3
 #
 
+<<<<<<< HEAD
 RSYNC_PERMISSIONS="--chmod=ug=rw,o=r"
 RSYNC_SKIP_COMPRESS="/7z/arc/arj/bz2/cab/cloop/deb/gz/gpg/iso/jar/jp2/jpg/jpeg/lz/lz4/lzma/lzo/png/qcow2/qdiff/qt/rar/rzip/s7z/sfx/svgz/tbz/tgz/tlz/txz/xz/z/zip/zst"
 UDEVADM="$(which udevadm)"
@@ -1119,11 +1113,7 @@ mk_winefiboot(){
       fi
       # copy whole windows efi stuff to efi partition
       echo "Restoring windows bootfiles on EFI partition."
-<<<<<<< HEAD
-      rsync --skip-compress="$RSYNC_SKIP_COMPRESS" -r "$win_bootdir/" "$win_efidir/"
-=======
       rsync -r "$win_bootdir/" "$win_efidir/"
->>>>>>> upstream-lmn7.2
     fi
   else
     echo "Failed to restore windows EFI bootfiles."
@@ -1188,11 +1178,7 @@ mk_efiboot(){
     local bootefi="$(ls $efibootdir/[Bb][Oo][Oo][Tt][Xx]64.[Ee][Ff][Ii] 2>/dev/null)"
     [ -z "$bootefi" ] && bootefi="$efibootdir/BOOTX64.EFI"
     mkdir -p "$efibootdir"
-<<<<<<< HEAD
-    if ! rsync --skip-compress="$RSYNC_SKIP_COMPRESS" "$grubefi" "$bootefi"; then
-=======
     if ! rsync "$grubefi" "$bootefi"; then
->>>>>>> upstream-lmn7.2
       echo "Failed to restore EFI standard boot."
       RC="1"
     else
@@ -1361,13 +1347,9 @@ mk_boot(){
     fi
   fi
   # umount efi partition if mounted
-<<<<<<< HEAD
   if [ -n "$efipart" ]; then
     umount /cache/boot/efi || RC="1"
   fi
-=======
-  [ -n "$efipart" ] && umount /cache/boot/efi || RC="1"
->>>>>>> upstream-lmn7.2
   return "$RC"
 }
 
@@ -2641,16 +2623,20 @@ torrent_watchdog(){
     fi
   done
   rm -f "$logfile"
+=======
+usage(){
   echo
-  if [ "$RC" = "0" ]; then
-    echo "Image $image downloaded successfully." | tee -a /tmp/image.log
-  else
-    ps w | grep -v grep | grep -q ctorrent && killall -9 ctorrent
-    echo "Cancelled download of $image because of timeout." >&2 | tee -a /tmp/image.log
-  fi
-  return "$RC"
+  echo "Usage: linbo_cmd <command> <options>"
+  echo
+  echo "Commands are:"
+  grep ') ' "$0" | grep -v usage | awk -F\) '{print $1}'
+  echo
+  echo "For detailed command help invoke: linbo_cmd <command> help"
+>>>>>>> upstream-master
+  echo
 }
 
+<<<<<<< HEAD
 # download_torrent imagefile
 download_torrent(){
   local imagefile="$1"
@@ -2716,12 +2702,8 @@ download_img_if_changed(){
   localmode && return 0
   local server="$1"
   local imagefile="$2"
-<<<<<<< HEAD
-  local imagebase="$(basename "$imagefile" | sed 's/\(.*\)\..*/\1/')"
-=======
   local imagebase="${imagefile%%.*}"
   local imagetype="${imagefile##*.}"
->>>>>>> upstream-lmn7.2
   local subdir="images/$imagebase/"
   local infofile="${imagefile}.info"
   local dltype="$3"
@@ -3465,6 +3447,46 @@ case "$cmd" in
   version) version ;;
   writefile) writefile "$@" ;;
   *) help "$cmd" "$@" ;;
+=======
+case "$1" in
+  auth) shift; linbo_auth "$@";;
+  battery) shift; linbo_bat "$@" ;;
+  cpu) shift; linbo_cpu "$@" ;;
+  create) shift; linbo_create_image "$@" ;;
+  ip) shift; linbo_ip "$@";;
+  netmask) shift; linbo_netmask "$@";;
+  bitmask) shift; linbo_bitmask "$@";;
+  hostname) shift; linbo_hostname "$@";;
+  memory) shift; linbo_mem "$@" ;;
+  mac) shift; linbo_mac "$@" ;;
+  size) shift; linbo_size "$@" ;;
+  listimages) shift; linbo_listimages "$@" ;;
+  authenticate) shift; linbo_auth "$@" ;;
+  start) shift; linbo_start "$@" ;;
+  fakestart) shift; linbo_fakestart "$@" ;;
+  label) shift; linbo_label "all" ;;
+  partition_noformat) shift; linbo_partition "$@" ;;
+  partition) shift; linbo_partition_format "$@" ;;
+  preregister) shift; linbo_preregister "$@" ;;
+  download) shift; linbo_download "$@" ;;
+  initcache) shift; linbo_initcache "$@" ;;
+  initcache_format) shift; linbo_initcache_format "$@" ;;
+  mountcache) shift; linbo_mountcache "$@" ;;
+  mount) shift; linbo_mount "$@" ;;
+  fstype) shift; linbo_fstype "$@" ;;
+  readfile) shift; linbo_readfile "$@" ;;
+  ready) shift; linbo_ready "$@" ;;
+  register) shift; linbo_register "$@" ;;
+  sync) shift; linbo_syncstart "$@" ;;
+  syncstart) shift; linbo_syncstart "$@" ;;
+  syncr) shift; linbo_syncstart "$@" ;;
+  synconly) shift; linbo_sync "$@" ;;
+  update) shift; linbo_update "$@" ;;
+  upload) shift; linbo_upload "$@" ;;
+  version) shift; linbo_version "$@" ;;
+  writefile) shift; linbo_writefile "$@" ;;
+  *) usage ;;
+>>>>>>> upstream-master
 esac
 
 # Return returncode

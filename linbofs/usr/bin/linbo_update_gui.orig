@@ -1,0 +1,222 @@
+#!/bin/sh
+#
+# download linbo_gui from server
+#
+# thomas@linuxmuster.net
+<<<<<<< HEAD
+# 20221006
+=======
+# 20230126
+>>>>>>> upstream-master
+#
+
+if [ -e /tmp/.gui.done ]; then
+  echo "linbo_gui is up-to-date."
+  exit 0
+fi
+
+# get environment
+source /usr/share/linbo/shell_functions
+
+# is gui disabled?
+[ -n "$NOGUI" ] && exit 0
+
+# print status message
+print_status(){
+  if [ -n "$SPLASH" ]; then
+    plymouth --update="$1"
+  else
+    echo "$1"
+  fi
+}
+
+<<<<<<< HEAD
+
+# update icons & theme
+update_icons(){
+  local item
+  local all_items
+  local linbo_gui_icons
+  local linbo_gui_themefile
+  local linbo_gui_themefile_icons
+  mkdir -p /cache/icons
+  echo "Updating linbo_gui icons & theming ..."
+  linbo_gui_icons="$(grep -i ^iconname /start.conf | awk -F\= '{ print $2 }' | awk '{ print $1 }')"
+  linbo_gui_themefile="$(grep -m1 -i ^themeconffile ./start.conf | awk -F\= '{ print $2 }' | awk '{ print $1 }' | tail -1)"
+  for item in $linbo_gui_icons $linbo_gui_themefile; do
+    rsync -L "$linbo_server::linbo/icons/$item" /cache/icons &> /dev/null
+  done
+  if [ -s "/cache/icons/$linbo_gui_themefile" ]; then
+    # if there is a themefile -> download all resources required for that theme
+    linbo_gui_themefile_icons="$(grep .svg "/cache/icons/$linbo_gui_themefile" | awk -F\= '{print $2}' | awk '{print $1}')"
+    for item in $linbo_gui_themefile_icons; do
+      rsync -L "$linbo_server::linbo/icons/$item" /cache/icons &> /dev/null
+    done
+  fi
+  # clean icons cache
+  all_items="$linbo_gui_icons $linbo_gui_themefile $linbo_gui_themefile_icons"
+  for item in `ls -1 /cache/icons/`; do
+    [ "$item" = "linbo_wallpaper.png" ] && continue
+    case "$all_items" in
+      *${item}*) continue ;;
+      *) rm -f "/cache/icons/$item" ;;
+    esac
+  done
+  # sync icons in place for gui
+  mkdir -p /icons
+  rsync -a --delete --exclude=linbo_wallpaper.png /cache/icons/ /icons/
+}
+
+
+=======
+>>>>>>> upstream-master
+# filename of gui archive
+gui_archive="linbo_gui64_7.tar.lz"
+
+
+# check if isoboot and try to get linbo_gui archive from cdrom
+if [ -n "$ISOBOOT" ]; then
+  print_status "ISO/USB boot detected, trying to get linbo_gui from removable media." | tee -a /tmp/linbo.log
+  mkdir -p /media
+  for i in /dev/disk/by-id/*; do
+    if mount "$i" /media &> /dev/null; then
+      # check for linbo_gui on iso
+      if [ -s "/media/$gui_archive" ]; then
+        tar xf "/media/$gui_archive" -C / || return 1
+        break
+      else
+        ISOBOOT=""
+      fi
+      umount /media &> /dev/null
+    fi
+    if [ -n "$ISOBOOT" ]; then
+      print_status "Successfully installed linbo_gui from removable media." | tee -a /tmp/linbo.log
+      touch /tmp/.gui.done
+      exit 0
+    fi
+  done
+fi
+
+
+print_status "Trying to download linbo_gui from server to cache."
+linbo_mountcache
+mount | grep -qw /cache && cache_mounted="yes"
+if [ -n "$cache_mounted" ]; then
+  print_status "Successfully mounted cache partition." | tee -a /tmp/linbo.log
+  dl_dir="/cache"
+else
+  print_status "Continuing without cache partition." | tee -a /tmp/linbo.log
+  dl_dir="/tmp"
+fi
+
+
+# download to cache if present else download to tmp
+gui_dir="$dl_dir/gui"
+icons_dir="$gui_dir/icons"
+themes_dir="$gui_dir/themes"
+
+
+if [ -z "$LINBOSERVER" ]; then
+
+  print_status "Cannot get linbo server, continuing offline." | tee -a /tmp/linbo.log
+
+# download if linbo server is known ...
+else
+
+  # move old archive to gui folder
+  mkdir -p "$icons_dir"
+  [ -e "$dl_dir/$gui_archive" ] && mv "$dl_dir/$gui_archive" "$gui_dir"
+  [ -e "$dl_dir/$gui_archive.md5" ] && rm -f "$dl_dir/$gui_archive.md5"
+  # sync gui archive
+  cd "$gui_dir"
+  RC="1"
+  for item in "$gui_archive" "gui/$gui_archive"; do
+    if isdownloadable "$item"; then
+      linbo_download "$item" 2>&1 | tee -a /tmp/linbo.log ; RC="$?"
+    fi
+  done
+  if [ "$RC" = "0" ]; then
+    print_status "$gui_archive successfully downloaded." | tee -a /tmp/linbo.log
+  else
+    print_status "Failed to download $gui_archive!" | tee -a /tmp/linbo.log
+    exit 1
+  fi
+  # sync gui icons
+  cd "$icons_dir"
+  for icon in $icons; do
+    RC="1"
+    for item in "icons/$icon" "gui/icons/$icon"; do
+      if isdownloadable "$item"; then
+        linbo_download "$item" 2>&1 | tee -a /tmp/linbo.log ; RC="$?"
+      fi
+    done
+    if [ "$RC" = "0" ]; then
+      print_status "All icons successfully downloaded." | tee -a /tmp/linbo.log
+      # remove old icons folder
+      [ -d "$dl_dir/icons" ] && rm -rf "$dl_dir/icons"
+    fi
+  done
+  # sync custom gui theme
+  if [ -n "$theme" ]; then
+    if isdownloadable "gui/themes/$theme"; then
+      mkdir -p "$themes_dir"
+      cd "$themes_dir"
+      # trailing / to download the theme dir recursively
+      linbo_download "gui/themes/$theme/" 2>&1 | tee -a /tmp/linbo.log ; RC="$?"
+    fi
+  fi
+
+<<<<<<< HEAD
+  if [ "$download" = "yes" ]; then
+    print_status "Downloading $gui_archive from $linbo_server." | tee -a /cache/linbo.log
+    linbo_cmd download "$linbo_server" "$gui_archive" 2>&1 | tee -a /cache/linbo.log
+    # get md5sum file if not yet downloaded
+    if [ ! -s "${gui_archive}.md5" ]; then
+      print_status "Downloading ${gui_archive}.md5 from $linbo_server." | tee -a /cache/linbo.log
+      linbo_cmd download "$linbo_server" "${gui_archive}.md5" 2>&1 | tee -a /cache/linbo.log
+    fi
+  fi
+
+  update_icons | tee -a /cache/linbo.log
+
+fi # offline
+=======
+fi # linbo server
+>>>>>>> upstream-master
+
+
+# unpack gui archive if present
+cd "$gui_dir"
+if [ -s "$gui_archive" ]; then
+  print_status "Unpacking linbo_gui archive."
+  tar xf "$gui_archive" -C / | tee -a /tmp/linbo.log
+fi
+
+# provide icons and theme
+case "$dl_dir" in
+  /cache)
+    [ -d "$icons_dir" ] && cp -r "$icons_dir" /
+    if [ -d "$themes_dir/$theme" ]; then
+      mkdir -p /themes
+      cp -r "$themes_dir/$theme" /themes
+    fi
+  ;;
+  *)
+    rm -rf /icons /themes
+    [ -d "$icons_dir" ] && ln -s "$icons_dir" /
+    [ -d "$themes_dir" ] && ln -s "$themes_dir" /
+  ;;
+esac
+
+
+# leave download dir
+cd /
+[ -n "$cache_mounted" ] && umount /cache
+if [ -s /usr/bin/linbo_gui ]; then
+  print_status "Successfully installed linbo_gui from cache."
+  touch /tmp/.gui.done
+  exit 0
+else
+  print_status "Failed to install linbo_gui from cache."
+  exit 1
+fi

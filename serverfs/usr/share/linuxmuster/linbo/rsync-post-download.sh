@@ -2,7 +2,7 @@
 #
 # Post-Download script for rsync/LINBO
 # thomas@linuxmuster.net
-# 20220908
+# 20230209
 #
 
 # read in paedml specific environment
@@ -25,10 +25,6 @@ PIDFILE="/tmp/rsync.$RSYNC_PID"
 
 # read file created by pre-upload script
 FILE="$(<$PIDFILE)"
-EXT="${FILE##*.}"
-BASENAME="$(basename "$FILE")"
-
-# fetch host & domainname
 do_rsync_hostname
 
 echo "HOSTNAME: $RSYNC_HOST_NAME"
@@ -47,10 +43,7 @@ fi
 # recognize download request of local grub.cfg
 stringinstring ".grub.cfg" "$FILE" && EXT="grub-local"
 
-# recognize start.conf request
-[ "$BASENAME" = "start.conf_$compname" ] && EXT="start-conf"
-
-case $EXT in
+case "$EXT" in
 
   # remove linbocmd file after download
   cmd)
@@ -70,12 +63,6 @@ case $EXT in
       echo "Removing machine password file $FILE."
       rm -f "$FILE"
     fi
-  ;;
-
-  # handle start.conf request
-  start-conf)
-    echo "Removing temporary $FILE."
-    rm -f "$FILE"
   ;;
 
   winkey)
@@ -133,6 +120,12 @@ case $EXT in
       echo "Removing $FILE."
       rm -f "$FILE"
     fi
+  ;;
+
+  # handle lmn71 start.conf request
+  start-conf)
+    echo "Removing temporary $FILE."
+    rm -f "$FILE"
   ;;
 
   *) ;;

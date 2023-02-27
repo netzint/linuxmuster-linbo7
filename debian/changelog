@@ -1,3 +1,206 @@
+linuxmuster-linbo7 (4.1.25-0) lmn72; urgency=low
+
+  * Improved error handling on diffimage creation (75cae3a).
+  * Example updates (7fe721e, d6d90c7, fc216e3, d56b191, d56b191).
+  * Update kernel to 6.1.12 (1e30e2d).
+  * Update nfs cache mount options (9752ea7).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Sat, 18 Feb 2023 14:18:00 +0100
+
+linuxmuster-linbo7 (4.1.24-0) lmn72; urgency=low
+
+  * Update to kernel 4.1.11 (01957e6).
+  * Fix linbo ssh_config (00188ea).
+  * Initiate warmstart|reboot if grub configuration has changed (f91318c, 115a5f0).
+  * Initiate reboot if warmstart is disabled (4b31a4).
+  * Initiate warmstart|reboot only if linbo has been booted locally from cache (4c181a7).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Sun, 11 Feb 2023 14:33:00 +0100
+
+linuxmuster-linbo7 (4.1.23-0) lmn72; urgency=low
+
+  * Fix wrong password verification (b51d484).
+  * Skip non alphanumeric variable names on environment creation (6ba78d2).  
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 10 Feb 2023 22:18:00 +0100
+
+linuxmuster-linbo7 (4.1.22-0) lmn72; urgency=low
+
+  * Fix lmn71 start.conf request (01e52af).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 9 Feb 2023 18:32:00 +0100
+
+linuxmuster-linbo7 (4.1.21-0) lmn72; urgency=low
+
+  * Fix linbo_wrapper format command (1a96625).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 8 Feb 2023 20:00:00 +0100
+
+linuxmuster-linbo7 (4.1.20-0) lmn72; urgency=low
+
+  * Improved evaluation of kernel cmdline (61af8c2).
+  * Fixed evaluation of start.conf values which contain an equal sign (c292b43).
+  * Update kernel to 6.1.10, activates some Thinkpad drivers (d41d31a, 91f6609).
+  * shell_functions fixes (3f89a95, c88c1ef, 14650c6).
+  * linbo_mountcache: Use cache parameter if it is given (9983c5c).
+  * improve offline mode (43185ef).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 7 Feb 2023 09:51:00 +0100
+
+linuxmuster-linbo7 (4.1.19-0) lmn72; urgency=low
+
+  * Fix #90: Add salt to password hash (48c7724).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 1 Feb 2023 19:42:00 +0100
+
+linuxmuster-linbo7 (4.1.18-0) lmn72; urgency=low
+
+  * Fix: efivarfs not mounted in linbofs (f4033f4).
+  * Fix #89: apparently missing old intel networkdriver (b08db85).
+  * Work on #83: Provide gui theme infos through environment (bf11729).
+  * Fix start.conf download path in init.sh (#88, 823c91e).
+  * Fix missing plymouth libraries (e6d5ad7).
+  * linbofs: added isdownloadable function (7f82b2d).
+  * linbofs: improved handling of folder downloads in linbo_download (c3656bb).
+  * Fix #83: FR: download linbo GUI theming files (5112247).
+  * linbofs boot splash code clean (f4d5e70).
+  * Use sha256 hash for linbo password (06cf2c1).
+  * Add coreutils to pkg deps (04dbd33).
+  * Fix #8: Offline login does not work in some cases (6276d08).
+  * Moved linbo-remote and update-linbofs to /usr/sbin (2a3f4db).
+  * linbo-remote: replaced screen with tmux (46898c4).
+  * Fix #85: Make linbo-remote -d the default action (c702794).
+  * Fix #54: Allow to use -n without -c or -p (155bb40).
+  * Update kernel to 6.1.8 (6ddc83a).
+  * Reworked the linbofs preparation of global start.conf values (#83, cbfe7ea).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 26 Jan 2023 22:26:00 +0100
+
+linuxmuster-linbo7 (4.1.17-0) lmn72; urgency=low
+
+  * Update kernel to 6.1.4 (b995528).
+  * r8168: add kernel patch for 6.1 series (309e02d).
+  * Replaced screen with tmux in linbo-multicast (889446e).
+  * Merge #88 (21bc5de):
+    - added dhcp client asking for nisdomain, fixed start.conf path on server.
+    - Use serverid instead of linbo_server in invoke_macct.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 13 Jan 2023 15:46:00 +0100
+
+linuxmuster-linbo7 (4.1.16-0) lmn72; urgency=low
+
+  * Update kernel to 6.0.12 (5807150).
+  * Added linbo_gui theming update to linboy_update_gui (398f31c, #84).
+  * Replaced screen with tmux in linbo-torrent (ad29f5c).
+  * Fix #86: add --skip-compress parameter to rsync commands to avoid compression of already compressed files (7738e8b).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 12 Dec 2022 20:27:00 +0100
+
+linuxmuster-linbo7 (4.1.15-0) lmn72; urgency=low
+
+  * linbo_start(): return 1 if os cannot be startet with reboot (a82d108).
+  * Update kernel to 5.19.9 (ee85177).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 20 Sep 2022 13:06:00 +0200
+
+linuxmuster-linbo7 (4.1.14-0) lmn72; urgency=low
+
+  * linbo_remote: reimplement -u option for use of broadcast address with wol (#77, 98f9459).
+  * Update kernel to 5.19.8 (344a9b1).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 12 Sep 2022 21:12:00 +0200
+
+linuxmuster-linbo7 (4.1.13-0) lmn72; urgency=low
+
+  * Fix image directory in rsync-pre-download.sh (159ee0b).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 9 Sep 2022 09:32:00 +0200
+
+linuxmuster-linbo7 (4.1.12-0) lmn72; urgency=low
+
+  * Fixes for rsync scripts concerning to dots in image filenames and multicast service restart (dad0b4f).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 8 Sep 2022 20:33:00 +0200
+
+linuxmuster-linbo7 (4.1.11-0) lmn72; urgency=low
+
+  * Fix initcache does not download linbo kernel & initrd (c5f86c3).
+  * Update kernel to 5.19.7 (00c835f).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 6 Sep 2022 22:52:00 +0200
+
+linuxmuster-linbo7 (4.1.10-0) lmn72; urgency=low
+
+  * Fix download error with imagefilename containing dots (3cab702).
+  * Update kernel to 5.19.2 (d886e3f).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 18 Aug 2022 22:42:00 +0200
+
+linuxmuster-linbo7 (4.1.9-0) lmn72; urgency=low
+
+  * Update kernel to 5.19.1 (b850801).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 15 Aug 2022 14:03:00 +0200
+
+linuxmuster-linbo7 (4.1.8-0) lmn72; urgency=low
+
+  * Fix typo in linbo-remote.sh (653d9d7).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 5 Aug 2022 21:29:00 +0200
+
+linuxmuster-linbo7 (4.1.7-0) lmn72; urgency=low
+
+  * helperfunctions.sh: fixed broadcast address is not recognized as valid ip in some cases (11346aa).
+  * Update kernel to 5.18.16 (eaada2e).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 4 Aug 2022 08:24:00 +0200
+
+linuxmuster-linbo7 (4.1.6-0) lmn72; urgency=low
+
+  * Improved mac address handling in linbo-remote (6758040).
+  * Add kernel signing script (58e4c2b).
+  * Update kernel to 5.18.14 (eaada2e).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Sat, 30 Jul 2022 15:53:00 +0200
+
+linuxmuster-linbo7 (4.1.5-0) lmn72; urgency=low
+
+  * linbo-remote wake-on-lan fixes (see #77).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 15 Jul 2022 15:08:00 +0200
+
+linuxmuster-linbo7 (4.1.4-0) lmn72; urgency=low
+
+  * Update kernel to 5.18.11 (2323d4f).
+  * Fix validate legacy options in linbo_create_image (cd9f51f).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 14 Jul 2022 20:20:00 +0200
+
+linuxmuster-linbo7 (4.1.3-0) lmn72; urgency=low
+
+  * Update kernel to 5.18.7 (e793be7).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 28 Mar 2022 11:09:00 +0200
+
+linuxmuster-linbo7 (4.1.2-0) lmn72; urgency=low
+
+  * Fix #74: Issue in umounting $efipart.
+  * Fix #76: Don't download control file from github.
+  * Fix #73: Make linbo_preregister print the result.
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 24 Mar 2022 19:09:00 +0200
+
+linuxmuster-linbo7 (4.1.1-0) lmn72; urgency=low
+
+  * Change temporary mount point in linbo_size (fd03470).
+  * Fix verbosity of linbo_mount (bb1c91f).
+  * Fix download qcow2 always (165fe60).
+  * Optimize dependencies (19fa51a, 74e27c6).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 24 Mar 2022 13:23:00 +0200
+
+linuxmuster-linbo7 (4.1.0-0) lmn72; urgency=low
+
 linuxmuster-linbo7 (14.1.0-2) lmn72-testing; urgency=low
 
   * try to fix depency error
@@ -14,7 +217,7 @@ linuxmuster-linbo7 (14.1.0-0) lmn72-testing; urgency=low
 linuxmuster-linbo7 (4.1.0-0) lmn71-testing; urgency=low
 
   * merged differential imaging from branch diffimage (cc78fd7...8969db1).
-  * update kernel to 5.17.1 (6bf2d65).
+  * update kernel to 5.18.5 (3dc8fbd).
   * added qdiff support to linbo-remote (f949a5d).
   * Fix recognition of "PXE IP4" uefi boot entry (e7aa263).
   * Fix #66: Issue parsing Running Torrent Trackers.
@@ -26,7 +229,10 @@ linuxmuster-linbo7 (4.1.0-0) lmn71-testing; urgency=low
   * linbo_cmd, mountpart: use remount instead of umount/mount (6eccd36).
   * use linbo warmstart also for uefi systems (53c7a30).
   * Fix #67: Linbo7 assumes wrong macct name (closes also #68).
-  * implement differential image sync (e46cade).
+  * Add r8168 module (757d3d6, 3c7a6d9).
+  * implement differential imaging (e46cade).
+  * provide linbo environment in /.env (#72).
+  * refactor linbo_cmd (#72).
 
  -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 13 Apr 2022 09:52:00 +0200
 

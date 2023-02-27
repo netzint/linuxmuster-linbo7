@@ -1,0 +1,52 @@
+#!/bin/sh
+#
+# thomas@linuxmuster.net
+# 20220624
+#
+
+set -e
+
+SUDO="$(which sudo)"
+if [ -z "$SUDO" ]; then
+  echo "Please install sudo!"
+  exit 1
+fi
+
+PKGNAME="linuxmuster-linbo7"
+<<<<<<< HEAD
+PROVIDER="netzint"
+BRANCH="lmn71"
+CONTROL_URL="https://raw.githubusercontent.com/$PROVIDER/$PKGNAME/$BRANCH/debian/control"
+=======
+>>>>>>> upstream-master
+
+echo "###############################################"
+echo "# Installing $PKGNAME build depends #"
+echo "###############################################"
+echo
+
+if [ ! -e debian/control ]; then
+ echo "debian/control not found!"
+ exit
+fi
+
+if ! grep -q "Source: $PKGNAME" debian/control; then
+ echo "This is no $PKGNAME source tree!"
+ exit
+fi
+
+# install prerequisites
+<<<<<<< HEAD
+$SUDO apt-get update
+$SUDO apt-get -y install bash bash-completion ccache curl dpkg-dev autotools-dev automake || exit 1
+
+# clean config.dat
+$SUDO rm /var/cache/debconf/config.dat
+=======
+$SUDO apt-get update && $SUDO apt-get -y dist-upgrade
+$SUDO apt-get -y install bash bash-completion ccache curl dpkg-dev || exit 1
+>>>>>>> upstream-master
+
+# install build depends
+BUILDDEPENDS="$(sed -n '/Build-Depends:/,/Package:/p' debian/control | grep -v ^Package | sed -e 's|^Build-Depends: ||' | sed -e 's|,||g')"
+$SUDO apt-get -y install $BUILDDEPENDS || exit 1

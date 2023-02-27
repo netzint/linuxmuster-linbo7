@@ -2,7 +2,7 @@
 #
 # Pre-Download script for rsync/LINBO
 # thomas@linuxmuster.net
-# 20220327
+# 20230209
 #
 
 # read in linuxmuster specific environment
@@ -19,13 +19,13 @@ FILE="${RSYNC_MODULE_PATH}/${RSYNC_REQUEST##$RSYNC_MODULE_NAME/}"
 PIDFILE="/tmp/rsync.$RSYNC_PID"
 echo "$FILE" > "$PIDFILE"
 
-EXT="${FILE##*.}"
 BASENAME="$(basename "$FILE")"
+EXT="${BASENAME##*.}"
 BASE="$(echo "$BASENAME" | sed 's/\(.*\)\..*/\1/')"
 case "$EXT" in desc|info|macct|torrent) BASE="$(echo "$BASE" | sed 's/\(.*\)\..*/\1/')" ;; esac
 case "$FILE" in
-  *.qcow2*|*.qdiff*) IMGDIR="$LINBOIMGDIR/$BASE" ;;
-  *) IMGDIR="$LINBODIR" ;;
+  *.cloop*) IMGDIR="$LINBODIR" ;;
+  *) IMGDIR="$LINBOIMGDIR/$BASE" ;;
 esac
 
 # fetch host & domainname
@@ -183,8 +183,9 @@ case $EXT in
     sed -e "s|linux \$linbo_kernel .*|linux \$linbo_kernel $append|g" "$grubcfg_tpl" > "$FILE"
   ;;
 
-  # handle start.conf request
+  # handle lmn71 start.conf request
   conf_*)
+    mkdir -p "$LINBODIR/tmp"
     group="$(get_hostgroup "$compname")"
     startconf="$LINBODIR/start.conf.$group"
     if [ -n "$group" -a -s "$startconf" ]; then
@@ -193,8 +194,6 @@ case $EXT in
       cp -L "$LINBODIR/start.conf" "$FILE"
     fi
   ;;
-
-  *) ;;
 
 esac
 
