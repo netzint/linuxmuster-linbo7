@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # thomas@linuxmuster.net
-# 20220624
+# 20230306
 #
 
 set -e
@@ -34,10 +34,13 @@ echo "Clean config.dat"
 $SUDO rm -v /var/cache/debconf/config.dat
 
 # install prerequisites
-$SUDO apt-get update && $SUDO apt-get -y dist-upgrade
-$SUDO apt-get -y install bash bash-completion ccache curl dpkg-dev || exit 1
+$SUDO apt-get update
+$SUDO apt-get -y install grub-efi-amd64-bin
+$SUDO apt-get --only-upgrade -y install grub-efi-amd64-signed
+$SUDO apt-get -y dist-upgrade
+$SUDO apt-get -y install bash bash-completion ccache curl dpkg-dev
 
 
 # install build depends
 BUILDDEPENDS="$(sed -n '/Build-Depends:/,/Package:/p' debian/control | grep -v ^Package | sed -e 's|^Build-Depends: ||' | sed -e 's|,||g')"
-$SUDO apt-get -y install $BUILDDEPENDS || exit 1
+$SUDO apt-get -y install $BUILDDEPENDS
