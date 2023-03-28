@@ -25,6 +25,10 @@ PIDFILE="/tmp/rsync.$RSYNC_PID"
 
 # read file created by pre-upload script
 FILE="$(<$PIDFILE)"
+BASENAME="$(basename "$FILE")"
+EXT="${BASENAME##*.}"
+
+# fetch host & domainname
 do_rsync_hostname
 
 echo "HOSTNAME: $RSYNC_HOST_NAME"

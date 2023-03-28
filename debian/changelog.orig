@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 linuxmuster-linbo7 (14.1.26-0) lmn72-testing; urgency=low
 
   * Update kernel to 6.2.2 (62b8e01).
@@ -11,6 +12,7 @@ linuxmuster-linbo7 (14.1.25-0) lmn72; urgency=low
   * Merged upstream
 
  -- Andreas Till <andreas.till@netzint.de>  Mon, 27 Feb 2023 14:44:56 +0200
+=======
 linuxmuster-linbo7 (4.1.28-0) lmn72; urgency=low
 
   * Update kernel to 6.2.7 (1160350).
@@ -23,6 +25,7 @@ linuxmuster-linbo7 (4.1.27-0) lmn72; urgency=low
   * Added rtl_nic firmware (ed99b93).
 
  -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 15 Mar 2023 20:19:00 +0100
+>>>>>>> upstream-lmn
 
 linuxmuster-linbo7 (4.1.26-0) lmn72; urgency=low
 

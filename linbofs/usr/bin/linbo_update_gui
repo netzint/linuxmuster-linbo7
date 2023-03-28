@@ -26,9 +26,10 @@ print_status(){
   fi
 }
 
+# filename of gui archive
+gui_archive="linbo_gui64_7.tar.lz"
 
-# update icons & theme
-update_icons(){
+
 # check if isoboot and try to get linbo_gui archive from cdrom
 if [ -n "$ISOBOOT" ]; then
   print_status "ISO/USB boot detected, trying to get linbo_gui from removable media." | tee -a /tmp/linbo.log
