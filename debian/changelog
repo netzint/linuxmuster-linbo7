@@ -1,3 +1,10 @@
+linuxmuster-linbo7 (14.1.28-0) lmn72-testing; urgency=low
+
+  * Sync changes from linuxmuster
+  * Rebase some files
+
+ -- Lukas Spitznagel <lukas.spitznagel@netzint.de>  Tue, 28 Mar 2023 15:31:00 +0100
+
 linuxmuster-linbo7 (14.1.26-0) lmn72-testing; urgency=low
 
   * Update kernel to 6.2.2 (62b8e01).
