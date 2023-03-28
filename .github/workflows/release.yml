@@ -15,10 +15,16 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Get artifact
-        run: ./get-pkg.sh
+      - name: Install dependencies
+        run: ./get-depends.sh
+
+      - name: Build
+        run: ./buildpackage.sh
+
+      - name: Copy artifacts
+        run: mkdir package && cp ../linuxmuster-linbo7_* ./package
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
