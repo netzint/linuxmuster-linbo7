@@ -33,7 +33,13 @@ if localmode; then
 fi
 
 # check params
-if validip "$1"; then shift; fi
+if validip "$1"; then
+  serverip="$1"
+  shift
+else
+  serverip="$LINBOSERVER"
+fi
+
 FILE="$1"
 IMPORTANT="$2"
 
