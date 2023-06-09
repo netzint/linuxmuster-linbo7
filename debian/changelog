@@ -1,3 +1,9 @@
+linuxmuster-linbo7 (14.1.30-0) lmn72-testing; urgency=low
+
+  *  Readded zero filling on image creation for test purpose
+
+ -- Andreas Till <andreas.till@netzint.de>  Fri, 09 Jun 2023 08:51:57 +0200
+
 linuxmuster-linbo7 (14.1.29-0) lmn72-testing; urgency=low
 
   * Disable zero filling on image creation
