@@ -1,3 +1,9 @@
+linuxmuster-linbo7 (14.1.32-0) lmn72-testing; urgency=low
+
+  * Rewritte Zeroing using pv, added pv into linbo
+
+ -- Andreas Till <andreas.till@netzint.de>  Wed, 21 Jun 2023 17:48:47 +0200
+
 linuxmuster-linbo7 (14.1.31-0) lmn72-testing; urgency=low
 
   * Added option to ececute hookscripts after update-linbofs
