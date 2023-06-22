@@ -1,3 +1,9 @@
+linuxmuster-linbo7 (14.1.33-0) lmn72-testing; urgency=low
+
+  *   fixed fileoutput and added and fixed diskesize zeroing disk
+
+ -- Andreas Till <andreas.till@netzint.de>  Thu, 22 Jun 2023 13:58:35 +0200
+
 linuxmuster-linbo7 (14.1.32-0) lmn72-testing; urgency=low
 
   * Rewritte Zeroing using pv, added pv into linbo
