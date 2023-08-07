@@ -2,7 +2,7 @@
 #
 # configure script for linuxmuster-linbo7 package
 # thomas@linuxmuster.net
-# 20230211
+# 20230730
 #
 
 # read constants & setup values
@@ -20,12 +20,14 @@ mkdir -p "$LINBODIR/tmp"
 chown nobody $LINBOLOGDIR -R
 
 # create dropbear ssh keys
-if [ ! -s "$SYSDIR/linbo/ssh_host_rsa_key" ]; then
-  ssh-keygen -t rsa -N "" -f $SYSDIR/linbo/ssh_host_rsa_key
+if [ ! -s "$SYSDIR/linbo/dropbear_rsa_host_key" ]; then
+  rm -f $SYSDIR/linbo/ssh_host_rsa_key*
+  ssh-keygen -m PEM -t rsa -N "" -f $SYSDIR/linbo/ssh_host_rsa_key
   /usr/lib/dropbear/dropbearconvert openssh dropbear $SYSDIR/linbo/ssh_host_rsa_key $SYSDIR/linbo/dropbear_rsa_host_key
 fi
-if [ ! -s "$SYSDIR/linbo/ssh_host_dsa_key" ]; then
-  ssh-keygen -t dsa -N "" -f $SYSDIR/linbo/ssh_host_dsa_key
+if [ ! -s "$SYSDIR/linbo/dropbear_dss_host_key" ]; then
+  rm -f $SYSDIR/linbo/ssh_host_dsa_key*
+  ssh-keygen -m PEM -t dsa -N "" -f $SYSDIR/linbo/ssh_host_dsa_key
   /usr/lib/dropbear/dropbearconvert openssh dropbear $SYSDIR/linbo/ssh_host_dsa_key $SYSDIR/linbo/dropbear_dss_host_key
 fi
 
@@ -71,38 +73,33 @@ fi
 # apply any systemd changes
 systemctl daemon-reload
 
-# opentracker
-if ! systemctl status opentracker &> /dev/null; then
-  systemctl enable opentracker
-  systemctl start opentracker
-fi
-
 # do the rest only on configured systems
 [ -e "$SETUPINI" ] || exit 0
 
 # update serverip in start.conf
-echo "Setting correct serverip in start.conf examples."
+echo "Setting serverip in start.conf examples."
 for i in $LINBODIR/start.conf $LINBODIR/examples/start.conf.*; do
-if ! grep -qi ^"Server = $serverip" "$i"; then
-  sed -i "s/^[Ss][Ee][Rr][Vv][Ee][Rr] = \([0-9]\{1,3\}[.]\)\{3\}[0-9]\{1,3\}/Server = $serverip/" "$i"
-fi
+  if ! grep -qi ^"Server = $serverip" "$i"; then
+    sed -i "s/^[Ss][Ee][Rr][Vv][Ee][Rr] = \([0-9]\{1,3\}[.]\)\{3\}[0-9]\{1,3\}/Server = $serverip/" "$i"
+  fi
 done
 
-# linbo-torrent service
-if systemctl status linbo-torrent &> /dev/null; then
-  systemctl restart linbo-torrent
-else
-  systemctl enable linbo-torrent
-  systemctl start linbo-torrent
+# activate linbo-multicast service if it was running before migration
+if [ -n "$RUNMCAST" ]; then
+  systemctl enable linbo-multicast.service
+  systemctl restart linbo-multicast.service
 fi
 
-# activate linbo-multicast service if it was running before
-if [ -n "$RUNMCAST" ]; then
-  systemctl enable linbo-multicast
-  systemctl start linbo-multicast
-else
-  systemctl status linbo-multicast &> /dev/null && systemctl restart linbo-multicast
-fi
+# check services
+for i in opentracker linbo-torrent linbo-multicast; do
+  if systemctl is-enabled $i.service &> /dev/null; then
+    if ! systemctl is-active $i.service &> /dev/null; then
+      systemctl start $i.service
+    fi
+  else
+    echo "$i.service is disabled. Consider to enable and start it via systemctl."
+  fi
+done
 
 # repair ssh_config
 conf="$SYSDIR/linbo/ssh_config"
@@ -111,6 +108,16 @@ if grep -q "$lmn71_string" "$conf"; then
   cp "$conf" "${conf}.lmn71"
   lmn72_string="HostKeyAlgorithms +ssh-rsa"
   sed -i "s|$lmn71_string|$lmn72_string|" "$conf"
+fi
+
+# provide rsync service override
+tpl="$TPLDIR/rsync.override.conf"
+conf="$(head -1 "$tpl" | awk '{print $2}')"
+if [ ! -s "$conf" ]; then
+  mkdir -p "$(dirname "$conf")"
+  cp -f "$tpl" "$conf"
+  systemctl daemon-reload
+  systemctl restart rsync.service
 fi
 
 update-linbofs || exit 1

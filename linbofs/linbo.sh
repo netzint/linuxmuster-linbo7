@@ -4,7 +4,7 @@
 # (C) Klaus Knopper 2007
 # License: GPL V2
 # thomas@linuxmuster.net
-# 20220615
+# 20230724
 #
 
 # Reset fb color mode
@@ -63,7 +63,10 @@ else # handle missing gui problem
     count=0
     if [ -d "/conf/" ]; then
     for item in /conf/os.*; do
+      [ -s "$item" ] || continue
+      name=""
       source "$item"
+      [ -z "$name" ] && continue
       count=$(( count + 1 ))
       echo "[$count] Start $name"
       count=$(( count + 1 ))

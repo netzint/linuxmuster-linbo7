@@ -49,11 +49,69 @@ linuxmuster-linbo7 (14.1.25-0) lmn72; urgency=low
   * Merged upstream
 
  -- Andreas Till <andreas.till@netzint.de>  Mon, 27 Feb 2023 14:44:56 +0200
+linuxmuster-linbo7 (4.1.34-0) lmn72; urgency=low
+
+  * Update kernel to 6.4.7 (4a2b48a).
+  * Fix typo in kernel build run script (3a06c81).
+  * Fix #100: dropbear ssh keys not generated when making an fresh install of 7.2 (no upgrade).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Sun, 30 Jul 2023 17:10:00 +0200
+
+linuxmuster-linbo7 (4.1.33-0) lmn72; urgency=low
+
+  * Force pulling r8168 source code on kernel update (08b0b5a).
+  * Fix CurrentControlSet with regpatcher (c288909).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 26 Jul 2023 14:20:00 +0200
+
+linuxmuster-linbo7 (4.1.32-0) lmn72; urgency=low
+
+  * Update kernel to 6.4.5 (e049c01).
+  * Removed correction of registry key paths from regpatcher (bf571a5).
+  * Improved function validmac in helperfunctions (3e3e4ad).
+  * Fix rsync service's write permissions to /etc (cdd2ea6).
+  * Added i2c drivers (#96, 442ec03).
+  * Merge pull request #98 from netzint/update-zeroing-pv (5dab3c7).
+  * Revert 5b23751 (bbeff5f).
+  * Moved linbofs build script to last position (71ae29b).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 24 Jul 2023 22:08:00 +0200
+
+linuxmuster-linbo7 (4.1.31-0) lmn72; urgency=low
+
+  * Update kernel to 6.4.2 (3e2e303).
+  * Fix handling of linbo_gui's register invokation (25b03eb).
+  * Fix console menu loop if no data are available (6239b79).
+  * Add pre and post hook scripts execution to update_linbofs (af0a1f2).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 10 Jul 2023 16:17:00 +0200
+
+linuxmuster-linbo7 (4.1.30-0) lmn72; urgency=low
+
+  * Update kernel to 6.3.4 (60964bb).
+  * Don't build r8168 module if it exists already from previous run (e3b8260).
+  * linbo-remote: introducing command "new" (e0ff077).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 26 May 2023 15:29:00 +0200
+
+linuxmuster-linbo7 (4.1.29-0) lmn72; urgency=low
+
+  * Update kernel to 6.3.1 (23548c7).
+  * Updated registry patch examples & README, added example win11bypass.reg (7b20d74).
+  * Fix: linbo_sync ignores force parameter (6748a8b).
+  * Fix: linbo_format fails if partition is mounted (06fb5a5).
+  * Log linbo_cmd invokations to /tmp for debugging (13fdc58).
+  * Fix: linbo-torrent service is stopped by package upgrade (c608737).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 11 May 2023 20:44:00 +0200
+
 linuxmuster-linbo7 (4.1.28-0) lmn72; urgency=low
 
-  * Update kernel to 6.2.7 (1160350).
+  * Update kernel to 6.2.12 (a872491).
+  * Fix postsync and reg files download after partitioning (6eaab88).
+  * Remove chrooted update-grub invokation on linux efi systems after sync (9958c5f).
 
- -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 20 Mar 2023 20:56:00 +0100
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 26 Apr 2023 16:51:00 +0100
 
 linuxmuster-linbo7 (4.1.27-0) lmn72; urgency=low
 
