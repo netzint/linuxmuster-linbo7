@@ -2,7 +2,7 @@
 #
 # linbo_sync
 # thomas@linuxmuster.net
-# 20230511
+# 20231102
 #
 
 
@@ -229,6 +229,7 @@ patch_fstab(){
   local options=""
   local dump=""
   local pass=""
+  local rootlabel=""
   [ -z "$rootdev" ] && return 1
   [ -e "$rootdev" ] || return 1
   [ -e /tmp/fstab ] && rm -f /tmp/fstab
@@ -247,19 +248,22 @@ patch_fstab(){
         [ -z "$dump" ] && return 1
         pass="$(echo "$line" | awk '{ print $6 }')"
         [ -z "$pass" ] && return 1
-        if [ "$rootdev_fstab" != "$rootdev" ]; then
-          # change root partition if necessary
-          echo "Setze Rootpartition: $rootdev."
+        # change root partition if necessary
+        echo "Patching root partition: $rootdev."
+        rootlabel="$(get_label "$rootdev")"
+        if [ -n "$rootlabel" ]; then
+          rootdev_fstab="LABEL=$rootlabel"
+        else
           rootdev_fstab="$rootdev"
-          line="$rootdev_fstab $mntpnt $fstype_fstab $options $dump $pass"
-          changed=yes
-        fi # rootdev
+        fi
+        line="$rootdev_fstab $mntpnt $fstype_fstab $options $dump $pass"
+        changed=yes
         # check for changed filesytem type if partition was formatted
         fstype_mount="$(cat /proc/mounts | grep "^$rootdev" | awk '{ print $3 }')"
         [ -z "$fstype_mount" ] && return 1
         if [ "$fstype_fstab" != "$fstype_mount" ]; then
           # change filesystem
-          echo "Setze Dateisystem: $fstype_mount."
+          echo "Patching filesystem: $fstype_mount."
           fstype_fstab="$fstype_mount"
           line="$rootdev_fstab $mntpnt $fstype_fstab $options $dump $pass"
           changed=yes

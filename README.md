@@ -212,7 +212,7 @@ Note:
 
 ## Improved LINBO client shell
 
-The improved LINBO client shell not ony presents a new login prompt
+The improved LINBO client shell not only presents a new login prompt
 ```
 Welcome to
  _      _____ _   _ ____   ____
@@ -287,11 +287,114 @@ guidisabled="no"
 theme="test_theme"
 useminimallayout="no"
 locale="de-de"
-systemtype="efi64"
+systemtype="efi64"12
 kerneloptions="quiet splash forcegrub"
 icons="win10.svg ubuntu.svg"
 ```
  This makes the LINBO client shell more powerful than ever. For more details please take a look at [#72](https://github.com/linuxmuster/linuxmuster-linbo7/issues/72).
+
+## Adding firmware
+From Linbo 4.2.0 there is a configuration file `/etc/linuxmuster/linbo/firmware` which can be used to integrate supplemental firmware files into the Linbo filesystem. Here is an example:
+```
+# /etc/linuxmuster/linbo/firmware
+
+# Realtek r8168 ethernet adapters firmware (whole directory)
+rtl_nic
+
+# Realtek RTL8821AE wifi firmware (single file)
+rtlwifi/rtl8821aefw.bin
+
+# Intel Wi-Fi 6 AX200 firmware (single file)
+iwlwifi-cc-a0-77.ucode
+```
+You can enter files or whole directories, one per line. The firmware files are taken from the linux-firmware package, which is installed on the server per default. Note that the path to the firmware must be specified relative to /lib/firmware.
+Examine the output of `dmesg` on the Linbo client to get infos about missing firmware:
+```
+nb-01: ~ # dmesg | grep firmware
+i915 0000:00:02.0: Direct firmware load for i915/kbl_dmc_ver1_04.bin failed with error -2
+i915 0000:00:02.0: [drm] Failed to load DMC firmware i915/kbl_dmc_ver1_04.bin. Disabling runtime power management.
+i915 0000:00:02.0: [drm] DMC firmware homepage: https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/i915
+```
+In this case you have to add the line "i915/kbl_dmc_ver1_04.bin" to the firmware configuration file. Finally you have to invoke `update-linbofs` on the server terminal to add the firmware file to the linbofs archive.
+
+## Wifi support
+From version 4.2.0 Linbo is able to use wireless networks. For this purpose the program [wpa_supplicant](https://w1.fi/wpa_supplicant/) was integrated.
+To use this feature you first have to examine whether the built-in wireless network adapter misses any firmware (see the above section).
+Additionally there is a configuration file `/etc/linuxmuster/linbo/wpa_supplicant.conf`, in which you have to<> define the wireless network to be used. Here are two examples:
+```
+# /etc/linuxmuster/linbo/wpa_supplicant.conf
+
+# wpa-psk secured
+network={
+  ssid="LINBO_MGMT"
+  scan_ssid=1
+  key_mgmt=WPA-PSK
+  psk="My Secret Passphrase"
+}
+
+# open
+network={
+   ssid="LINBO_MGMT"
+   key_mgmt=NONE
+}
+```
+For more examples see https://linux.die.net/man/5/wpa_supplicant.conf.
+After you have provided the configuration file, you have to invoke the command `update-linbofs` on the server to apply the changes to linbofs.
+In the last step you have to add an entry with the wifi adapter's mac address in the file devices.csv or in the School Console under "Devices". Note that you then have two entries for the same device and the hostnames must differ:
+```
+notebooks;nb-01;nbclass;4d:b6:a7:12:45:79;10.0.100.1;;;;classroom-studentcomputer;;1
+notebooks;nb-01w;nbclass;b2:5f:5e:32:12:65;DHCP;;;;classroom-studentcomputer;;1
+```
+Don't forget to apply the changes either by invoking the command `linuxmuster-import-devices` on the server terminal or by pressing the button "Save & import" in the School Console.
+Note that there are some restrictions by the use of wireless network connections:
+* Wireless pxe boot is not possible. Linbo establishes the wireless connection only during the boot process.
+* The initial Linbo installation on a client has to be done over a wired network connection.
+* Assume that huge downloads of operating system images may reduce your wireless experience.
+* Consider to setup a restricted wireless network for Linbo management purposes to limit unauthorized use.
+
+## Execute your own boot scripts
+Perform the following 4 steps to execute your own boot script during the linbo-client's init process:
+1. Create the script, which you want to execute during linbo boot, for example under `/root/linbofs/mybootscript.sh`. Note that you can use the linbo environment in your script by sourcing the file `/.env` (see above).  
+2. Create an update-linbofs pre-hook script in the directory `/var/lib/linuxmuster/hooks/update-linbofs.pre.d` named for example `copy_myscript` to copy your boot script to the linbo filesystem:
+    ```
+    #!/bin/bash
+    # copies my script to /usr/bin in the linbo filesystem
+    myscript="/root/linbofs/mybootscript.sh"
+    echo "### copy $myscript ###"
+    cp "$myscript" usr/bin
+
+    ```
+    Note that the pre-hook script will be executed in the root directory of the linbo filesystem so you have to give the target path relative to it (no leading /). Don't forget to make the pre-hook script executable.  
+3. Create a file `/etc/linuxmuster/linbo/inittab` with the following content:
+    ```
+    ::wait:/usr/bin/mybootscript.sh
+    ```
+    The content of this file will be appended to the inittab in the linbo filesystem by `update-linbofs`. In the example the init process will wait until the script has been completed. For more information about inittab see https://manpages.debian.org/unstable/sysvinit-core/inittab.5.en.html.  
+4. Apply your changes to the linbo filesystem by executing `update-linbofs`.
+
+## Integrate your own kernel
+From Linbo version 4.2.4 you can integrate an alternative kernel into the Linbo file system. Simply create a file under `/etc/linuxmuster/linbo/custom_kernel` and define the paths to the kernel image and the modules directory:
+```
+# currently active kernel image and modules used by the server
+# path to kernel image
+KERNELPATH="/boot/vmlinuz-$(uname -r)"
+# path to the corresponding modules directory
+MODULESPATH="/lib/modules/$(uname -r)"
+
+# custom kernel image and modules
+KERNELPATH="/path/to/my/kernelimage"
+# path to the corresponding modules directory
+MODULESPATH="/path/to/my/lib/modules/n.n.n"
+```
+If you want to use the legacy (5.15.\*) or longterm (6.1.\*) kernels shipped with Linbo you have to make simply the following entries:
+```
+# use Linbo's alternative legacy kernel
+KERNELPATH="legacy"
+
+# use Linbo's alternative longterm kernel
+KERNELPATH="longterm"
+```
+To apply your changes you have to execute `update-linbofs`. The example above points to the alternative Linbo legacy kernel image and modules. But you can use any other kernel, kernels delivered with the server or other distros or even one compiled on another machine and copied to the server. You only have to provide the paths to the kernel image and the modules directory. Note that your own kernel will be a much larger than the included linbo kernels and that you have to test it if it fits to your client hardware. With self-compiled Linbo kernels, art is to omit unneededed modules to optimize size. A starting point can be the [configuration file of the supplied kernel](https://github.com/linuxmuster/linuxmuster-linbo7/blob/main/build/config/kernel).
 
 ## Build environment
 

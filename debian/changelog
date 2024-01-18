@@ -1,3 +1,9 @@
+linuxmuster-linbo7 (14.2.12-0) lmn72-testing; urgency=low
+
+  * Merged Upstream-LMN Version 4.2.12-0
+
+ -- Lukas Spitznagel <lukas.spitznagel@netzint.de>  Thu, 18 Jan 2024 15:37:29 +0200
+
 linuxmuster-linbo7 (14.1.36-0) lmn72-testing; urgency=low
 
   * Merged Upstream-LMN VErsion 4.1.36-0
@@ -76,6 +82,138 @@ linuxmuster-linbo7 (14.1.25-0) lmn72; urgency=low
   * Merged upstream
 
  -- Andreas Till <andreas.till@netzint.de>  Mon, 27 Feb 2023 14:44:56 +0200
+
+linuxmuster-linbo7 (4.2.12-0) lmn72; urgency=low
+
+  * development:
+    - add noinstall option to modules build script (774f905).
+    - harvest-app.sh fixes (3e2bd31, d6d4843, 0f85334).
+    - add script app2initramfs.sh to build environment (0328579).
+  * maintenance:
+    - add uinput module (c3395d8, f23c2f9).
+    - filter bad lines from linbofs environment file (a9f74a9).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 07 Dec 2023 19:58:05 +0100
+
+linuxmuster-linbo7 (4.2.11-0) lmn72; urgency=low
+
+  * initiate a warm reboot bypassing the grub menu if kexec warmstart is switched off (5635826).
+  * remove dropbear message about missing host keys (5efcb70).
+  * rather add than overwrite cached logs in localmode (041b122).
+  * refactor kernel build process (fb4971f).
+  * update stable kernel to 6.6.4 (2f8c1a6).
+  * update longterm kernel to 6.1.65 (4d12fa4).
+  * update legacy kernel to 5.15.141 (4d1aeac).
+  * add app harvesting script (88627bd).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 05 Dec 2023 06:37:01 +0000
+
+linuxmuster-linbo7 (4.2.10-0) lmn72; urgency=low
+
+  * make nomodeset kernel parameter default (7a80e76).
+  * clean up remnants of 32bit linbo (#106).
+  * remove deprecated kernel signing stuff (1835659, a453cb0).
+  * change kernel and linbofs compression to xz (#109).
+  * change filename of linbofs64.lz to linbofs64 (9e42a3d, f8fffbb).
+  * fix network device order (b717732).
+  * fix linbo_gui on iso boot (4692beb).
+  * update stable kernel to 6.6.2 (a5e6449).
+  * update longterm kernel to 6.1.63 (82d0259).
+  * update legacy kernel to 5.15.139 (a431b2f).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Fri, 24 Nov 2023 07:30:21 +0000
+
+linuxmuster-linbo7 (4.2.9-0) lmn72; urgency=low
+
+  * fix localmode (ff6d102).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 16 Nov 2023 17:01:31 +0000
+
+linuxmuster-linbo7 (4.2.8-1) lmn72; urgency=low
+
+  * update-linbofs fix (3e191d0).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 15 Nov 2023 21:26:43 +0000
+
+linuxmuster-linbo7 (4.2.8-0) lmn72; urgency=low
+
+  * add lenovo hid drivers to default kernel (dad2efa).
+  * fix handling of unregistered and unpartitioned clients (3f61f9c).
+  * pack modules in xz archives to decrease package size ().
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 15 Nov 2023 20:31:53 +0000
+
+linuxmuster-linbo7 (4.2.7-0) lmn72; urgency=low
+
+  * use jobs to compile external modules (b0d6a7d).
+  * optimize kernel wifi configuration (7c28fc3, f6b80ae).
+  * fix linbo kernel provision on kernel change (0b542da).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 14 Nov 2023 21:39:28 +0000
+
+linuxmuster-linbo7 (4.2.6-0) lmn72; urgency=low
+
+  * add ability to use lts kernel 6.1.62 alternatively (#107, 6989d30).
+  * Fix typo in update-linbofs (872dc1f).
+  * use jobs to compile kernels (2fd53f3).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Mon, 13 Nov 2023 08:22:20 +0000
+
+linuxmuster-linbo7 (4.2.5-0) lmn72; urgency=low
+
+  * add ability to use Linbo's legacy kernel 5.15.138 alternatively (#107, 503b181, b6f0242).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Sun, 12 Nov 2023 19:16:10 +0000
+
+linuxmuster-linbo7 (4.2.4-0) lmn72; urgency=low
+
+  * update-linbofs: use custom kernel optional (#107, c96f13b, 0ad09de, d4201cb).
+  * make-linbo-iso.sh: Increase EFIIMAGESIZE to 256M (#107, ee86245).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 10 Nov 2023 09:07:03 +0100
+
+linuxmuster-linbo7 (4.2.3-0) lmn72; urgency=low
+
+  * linbo_sync: Use partition labels for fstab in any case (073f347).
+  * make-linbo-iso.sh: Increase EFIIMAGESIZE to 192M (349d0d5).
+  * init.sh: remove unnecessary second try to get a dhcp address (6948135).
+  * Remove unnecessary cache parameters from linbo_cmd (fed1e8a).
+  * Update kernel to 6.6.1, enabled expert config options (8b48b61).
+  * Allow custom scripts to be executed on linbo boot (#105):
+    - Provide custom inittab entries (ad5cdc7).
+    - Filter custom inittab comments and empty lines (54f1fcd).
+    - Add update-linbofs pre hook example (e0a4632).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 9 Nov 2023 15:56:12 +0100
+
+linuxmuster-linbo7 (4.2.2-0) lmn72; urgency=low
+
+  * Use label to determine real partition devicename (411b707).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Thu, 2 Nov 2023 14:45:35 +0100
+
+linuxmuster-linbo7 (4.2.1-0) lmn72; urgency=low
+
+  * linbo_sync: Use partition labels for fstab if available (1fd8e9e).
+  * Remove interface link detection (bebcb47).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Wed, 1 Nov 2023 22:11:50 +0100
+
+linuxmuster-linbo7 (4.2.0-0) lmn72; urgency=low
+
+  * Wifi support #103:
+    - Add wpa_supplicant to linbofs (d9c4d93).
+    - Add rtl8812au usb wifi driver (f59b36c).
+    - Update package dependencies (67271a3).
+  * Update kernel to 6.5.9 (37436af).
+  * Make firmware configurable, use new environment variables LINBOSYSDIR and LINBOVARDIR (6e0423d).
+  * Refactor external modules build (53d3952).
+  * Use new environment variables LINBOSYSDIR and LINBOVARDIR (20f8e92).
+  * Suppress console output of linbo_mountcache (2bf5d9b).
+  * Add quiet mode to linbo_split_startconf (18ec94c).
+
+ -- Thomas Schmitt <thomas@linuxmuster.net>  Sun, 29 Oct 2023 11:18:25 +0100
+
 linuxmuster-linbo7 (4.1.36-0) lmn72; urgency=low
 
   * Update kernel to 6.5.3 (a3ad8b7).

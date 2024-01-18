@@ -2,7 +2,7 @@
 #
 # configure script for linuxmuster-linbo7 package
 # thomas@linuxmuster.net
-# 20230801
+# 20231124
 #
 
 # read constants & setup values
@@ -37,7 +37,7 @@ done
 # provide grub menu background
 wp_std="linbo_wallpaper_800x600.png"
 wp_lnk="$LINBODIR/icons/linbo_wallpaper.png"
-wp_grub="$LINBODIR/boot/grub/linbo_wallpaper.png"
+wp_grub="$LINBOGRUBDIR/linbo_wallpaper.png"
 rm -f "$wp_lnk" "$wp_grub"
 ln -sf "$wp_std" "$wp_lnk"
 cp -fL "$wp_lnk" "$wp_grub"
@@ -105,7 +105,7 @@ for i in opentracker linbo-torrent linbo-multicast; do
 done
 
 # repair ssh_config
-conf="$SYSDIR/linbo/ssh_config"
+conf="$LINBOSYSDIR/ssh_config"
 lmn71_string="PubkeyAcceptedKeyTypes=+ssh-dss"
 if grep -q "$lmn71_string" "$conf"; then
   cp "$conf" "${conf}.lmn71"
@@ -121,6 +121,21 @@ if [ ! -s "$conf" ]; then
   cp -f "$tpl" "$conf"
   systemctl daemon-reload
   systemctl restart rsync.service
+fi
+
+# rename linbofs64
+if grep -q linbofs64.lz "$LINBOGRUBDIR"/*.cfg; then
+  echo "Note: Name of linbofs64.lz has changed to linbofs64. We will change this"
+  echo "in your grub configs now. A backup of your files will be made with the"
+  echo "extension dpkg-bak. Anyway, run linuxmuster-import-devices to update"
+  echo "your configuration afterwards."
+  for i in "$LINBOGRUBDIR"/*.cfg; do
+    if grep -q linbofs64.lz "$i"; then
+      echo " * $(basename $i)"
+      cp "$i" "${i}.dpkg-bak"
+      sed -i 's|linbofs64.lz|linbofs64|g' "$i"
+    fi
+  done
 fi
 
 update-linbofs || exit 1

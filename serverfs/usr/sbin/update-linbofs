@@ -6,14 +6,14 @@
 #
 # thomas@linuxmuster.net
 # GPL V3
-# 20230710
+# 20231121
 #
 
 # read linuxmuster environment
 source /usr/share/linuxmuster/linbo/helperfunctions.sh || exit 1
 
-if [ ! -e "$SETUPINI" ]; then
-	echo "linuxmuster.net is not configured! Aborting!"
+if [ ! -s "$SETUPINI" ]; then
+	echo "linuxmuster.net is not yet set up, aborting!"
 	exit 0
 fi
 
@@ -28,13 +28,57 @@ if [ -e "$locker" ]; then
 fi
 touch $locker || exit 1
 chmod 400 "$locker"
-curdir=`pwd`
+
+# get kernel image, modules and version
+# first set custom kernel, if provided
+if [ -s "$LINBOSYSDIR/custom_kernel" ]; then
+	# read custom kernel config if provided
+	source "$LINBOSYSDIR/custom_kernel"
+	if [ -n "$KERNELPATH" ]; then
+		# validate entries
+		case "$KERNELPATH" in
+			${KLGCDIR}*|legacy)
+				# legacy kernel stuff
+				KERNELPATH="$KLGCDIR/linbo64"
+				MODULESPATH="$KLGCDIR/modules.tar.xz"
+				KVERS="$(cat "$KLGCDIR/version")"
+				KTYPE="legacy"
+				;;
+			${KLTSDIR}*|longterm)
+				# longterm kernel stuff
+				KERNELPATH="$KLTSDIR/linbo64"
+				MODULESPATH="$KLTSDIR/modules.tar.xz"
+				KVERS="$(cat "$KLTSDIR/version")"
+				KTYPE="longterm"
+				;;
+			*)
+				# custom kernel stuff (see /etc/linuxmuster/linbo/custom_kernel.ex for examples)
+				if [ ! -s "$KERNELPATH" ]; then
+					echo "KERNELPATH $KERNELPATH is not valid!"
+					exit 1
+				fi
+				if [ ! -d "$MODULESPATH" ]; then
+					echo "MODULESPATH $MODULESPATH is not valid!"
+					exit 1
+				fi
+				KVERS="$(basename "$MODULESPATH")"
+				KTYPE="custom"
+				;;
+		esac
+	fi
+fi
+# otherwise set default kernel to stable
+if [ -z "$KERNELPATH" ]; then
+	KERNELPATH="$KSTBDIR/linbo64"
+	MODULESPATH="$KSTBDIR/modules.tar.xz"
+	KVERS="$(cat "$KSTBDIR/version")"
+	KTYPE="stable"
+fi
 
 
 # clean tmpdir and exit with error
 bailout() {
 	echo "$1"
-	cd "$curdir"
 	[ -n "$locker" -a -e "$locker" ] && rm -f "$locker"
 	exit 1
 }
@@ -59,29 +103,49 @@ exec_hooks() {
 }
 
 
-update_linbofs() {
-	local suffix="64"
-	local linbovardir="$VARDIR/linbo"
-	local linbofstpl="$linbovardir/linbofs64.cpio"
-	local linbofscachedir="$LINBOCACHEDIR/linbofs$suffix"
-	local linbofs="$LINBODIR/linbofs${suffix}.lz"
-	local linbofs_md5="$linbofs".md5
+create_linbofs() {
+	local linbofs="linbofs64"
+	local linbofs_template="$LINBOVARDIR/${linbofs}.xz"
+	local linbofs_cache="$LINBOCACHEDIR/$linbofs"
+	local linbofs_xz="$LINBODIR/${linbofs}"
+	local linbofs_md5="${linbofs_xz}.md5"
+	local conf
+	local fw_base="/lib/firmware"
+	local fw_dir
+	local fw_source
+	local fw_target
 	local i
 
 	rm -f "$linbofs_md5"
-	rm -rf "$linbofscachedir"
-	mkdir -p "$linbofscachedir"
+	rm -rf "$linbofs_cache"
+	mkdir -p "$linbofs_cache"
 
-	# begin to process linbofs${suffix}.lz
-	echo "Processing linbofs${suffix} update ..."
+	# begin to process linbofs64
+	echo "Creating new linbo filesystem ..."
 
 	# sync linbofs filesystem to cache dir
-	mkdir -p "$linbofscachedir"
-	cd "$linbofscachedir" || bailout "Failed to change to $linbofscachedir!"
+	mkdir -p "$linbofs_cache"
+	cd "$linbofs_cache" || bailout "Failed to change to $linbofs_cache!"
 	set -o pipefail
-	cat "$linbofstpl" | cpio -i -d -H newc --no-absolute-filenames &> /dev/null ; RC="$?"
+	xzcat "$linbofs_template" | cpio -i -d -H newc --no-absolute-filenames &> /dev/null ; RC="$?"
 	set +o pipefail
-	[ "$RC" = "0" ] || bailout " Failed to unpack $(basename "$linbofstpl")!"
+	[ "$RC" = "0" ] || bailout " Failed to unpack $(basename "$linbofs_template")!"
+
+	# provide modules
+	echo "Using $KTYPE kernel version $KVERS ..."
+	mkdir -p lib/modules
+	case "$KTYPE" in
+		stable|longterm|legacy)
+			echo "Extracting modules ..."
+			tar xf "$MODULESPATH" | exit 1
+			;;
+		*)
+			echo "Copying modules ..."
+			cp -r "$MODULESPATH" lib/modules
+			;;
+	esac
+	echo "Generating modules.dep and map files ..."
+	depmod -a -b . "$KVERS"
 
 	# store linbo password hash
 	echo -n "$linbo_pwhash" > etc/linbo_pwhash
@@ -90,9 +154,9 @@ update_linbofs() {
 
 	# provide dropbear ssh host key
 	mkdir -p etc/dropbear
-	cp $SYSDIR/linbo/dropbear_*_host_key etc/dropbear
+	cp $LINBOSYSDIR/dropbear_*_host_key etc/dropbear
 	mkdir -p etc/ssh
-	cp $SYSDIR/linbo/ssh_host_*_key* etc/ssh
+	cp $LINBOSYSDIR/ssh_host_*_key* etc/ssh
 	mkdir -p .ssh
 	cat /root/.ssh/id_*.pub > .ssh/authorized_keys
 	# supplemental authorized_keys
@@ -101,14 +165,14 @@ update_linbofs() {
 	touch var/log/lastlog
 	# check and repair permissions
 	for i in .ssh .ssh/authorized_keys; do
-	perms="$(LANG=C stat "$i" | grep ^Access | grep Uid: | awk -F\( '{ print $2 }' | awk -F\/ '{ print $1 }')"
-	if [ "${perms:1:3}" = "666" -o "${perms:1:3}" = "777" ]; then
-		echo "WARNING! $i has bogus permissions!"
-		sleep 3
-		echo "Repairing for now but check your filesystem!"
-		[ -d "$i" ] && chmod 755 "$i"
-		[ -f "$i" ] && chmod 644 "$i"
-	fi
+		perms="$(LANG=C stat "$i" | grep ^Access | grep Uid: | awk -F\( '{ print $2 }' | awk -F\/ '{ print $1 }')"
+		if [ "${perms:1:3}" = "666" -o "${perms:1:3}" = "777" ]; then
+			echo "WARNING! $i has bogus permissions!"
+			sleep 3
+			echo "Repairing for now but check your filesystem!"
+			[ -d "$i" ] && chmod 755 "$i"
+			[ -f "$i" ] && chmod 644 "$i"
+		fi
 	done
 
 	# copy default start.conf
@@ -118,22 +182,62 @@ update_linbofs() {
 	# copy timezone info file
 	[ -e /etc/localtime ] && cp -L "/etc/localtime" etc/localtime
 
+	# provide firmware
+	conf="$LINBOSYSDIR/firmware"
+	if [ -s "$conf" ]; then
+		echo "Copying firmware ..."
+		grep -v ^# "$conf" | while read line; do
+			[ -z "$line" ] && continue
+			fw_source="$fw_base/$line"
+			[ -e "$fw_source" ] || continue
+			echo "  $line"
+			fw_target="${fw_source/\/}"
+			fw_dir="$(dirname "$fw_target")"
+			mkdir -p "$fw_dir"
+			cp -a "$fw_source" "$fw_dir"
+		done
+	fi
+
+	# provide wpa_supplicant config
+	conf="$LINBOSYSDIR/wpa_supplicant.conf"
+	if [ -s "$conf" ]; then
+		echo "Copying $(basename $conf) ..."
+		cp "$conf" etc
+	fi
+
+	# provide additional inittab entries
+	conf="$LINBOSYSDIR/inittab"
+	if [ -s "$conf" ]; then
+		echo "Adding custom $(basename $conf) entries ..."
+		echo "# custom entries" >> "etc/$(basename $conf)"
+		grep -v ^# "$conf" | grep -v '^$' >> "etc/$(basename $conf)"
+	fi
+
 	# execute pre hook scripts
 	exec_hooks pre
 
-	# pack linbofs${suffix}.lz
+	# pack linbofs64
+	echo "Creating xz archive (may take a while) ..."
 	set -o pipefail
-	find . | cpio --quiet -o -H newc | lzma -zcv > "$linbofs" ; RC="$?"
+	find . -print | cpio --quiet -o -H newc | xz -e --check=none -z -f -T 0 -c -v > "$linbofs_xz" ; RC="$?"
 	set +o pipefail
-  [ $RC -ne 0 ] && bailout "failed!"
+  	[ $RC -ne 0 ] && bailout "failed!"
 
 	# create md5sum file
-	md5sum "$linbofs"  | awk '{ print $1 }' > "$linbofs_md5"
+	md5sum "$linbofs_xz"  | awk '{ print $1 }' > "$linbofs_md5"
 
-	cd "$curdir"
+	# link to old filename
+	linbofs_lz="${linbofs_xz}.lz"
+	rm -f "${linbofs_lz}"*
+	ln -s "$(basename $linbofs_xz)" "$linbofs_lz"
+	ln -s "$(basename $linbofs_md5)" "${linbofs_lz}.md5"
+
+	# copy kernel image
+	echo "Copying $KTYPE kernel version $KVERS ..."
+	cp "$KERNELPATH" "$LINBODIR/linbo64"
+	md5sum "$LINBODIR/linbo64" | awk '{ print $1 }' > "$LINBODIR/linbo64.md5"
 
 	echo "Ok!"
-
 }
 
 
@@ -154,8 +258,7 @@ else
 	exit 1
 fi
 
-# process linbofs updates
-update_linbofs
+create_linbofs
 
 # create iso files
 "$LINBOSHAREDIR"/make-linbo-iso.sh

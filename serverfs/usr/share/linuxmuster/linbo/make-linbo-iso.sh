@@ -3,7 +3,7 @@
 # create bootable linbo isos
 #
 # thomas@linuxmuster.net
-# 20220824
+# 20231122
 # GPL V3
 #
 
@@ -34,7 +34,7 @@ ISOHDPFX="$ISOLINUXSRC/isohdpfx.bin"
 SYSLINUXSRC="/usr/lib/syslinux/modules/bios"
 SYSLINUXMODS="config ifcpu64 ldlinux libcom32 libutil vesamenu"
 
-EFIIMGSIZE="128M"
+EFIIMGSIZE="256M"
 EFIMOUNT="/var/tmp/efi.$$"
 mkdir -p "$EFIMOUNT"
 
@@ -51,7 +51,7 @@ mkdir -p "$GRUBPREFIX"
 rsync -a -L --delete --delete-excluded --exclude=*.cfg* --exclude=spool "$GRUBDIR/" "$GRUBPREFIX/"
 cp "$GRUBCFG" "$GRUBPREFIX/grub.cfg"
 cp "$LINBOCFG" "$GRUBPREFIX/linbo.cfg"
-for i in linbo64 linbofs64.lz linbo_gui64_7.tar.lz linbo-version; do
+for i in linbo64 linbofs64 linbo_gui64_7.tar.lz linbo-version; do
  cp "$LINBODIR/$i" "$ISOCACHE"
 done
 cp "$GRUBDIR"/ipxe.* "$ISOCACHE"

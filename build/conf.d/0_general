@@ -1,7 +1,7 @@
 # build.conf
 # general environment variables
 # thomas@linuxmuster.net
-# 20210507
+# 20231202
 #
 
 # must be buildroot
@@ -24,6 +24,7 @@ LINBOFS="$BUILDROOT/linbofs"
 SERVERFS="$BUILDROOT/serverfs"
 SRC="$BUILDROOT/src"
 TMPDIR="$BUILDROOT/tmp"
+KMODTMP="$TMPDIR/modules"
 
 # package data
 PKGNAME="linuxmuster-linbo7"
@@ -32,3 +33,15 @@ PKGVARDIR="$PKGBUILDROOT/var/lib/linuxmuster/linbo"
 
 # linbo related
 LINBODIR="$PKGBUILDROOT/srv/linbo"
+
+# kernel scripts
+KGET="$BUILDBIN/get-verified-kernel.sh"
+KNAMES="$BUILDBIN/kernel-names.sh"
+KRNLINDEX="$SRC/kernel.org"
+
+# initramfs file used during kernel build
+INITRAMFS_KERNEL="$BUILDINITD/00_basic"
+
+# compiler
+JOBS=$(( $(grep ^processor /proc/cpuinfo | tail -1 | awk '{print $3}') + 1 ))
+[ -n $JOBS ] && J_OPT="-j $JOBS"

@@ -5,7 +5,7 @@
 # License: GPL V2
 #
 # thomas@linuxmuster.net
-# 20230210
+# 20231207
 #
 
 # If you don't have a "standalone shell" busybox, enable this:
@@ -86,6 +86,16 @@ udev_extra_nodes() {
   done
 }
 
+# clean bad lines from .env
+clean_env(){
+  local line
+  grep -v "^#\|^$\|^export [A-Z0-9_-]*=[\"\'].*[\"\']" /.env | while read line; do
+    [ -z "$line" ] && continue
+    echo "Removing bad line ** $line ** from /.env ..." | tee -a /tmp/clean_env.log
+    sed -i "/$line/d" /.env
+  done
+}
+
 # provide environment variables from kernel cmdline and dhcp.log
 do_env(){
   local item
@@ -111,14 +121,25 @@ do_env(){
     # write entry to env file
     echo "export ${item/${varname}/${upvarname}}" >> /.env
   done
+  clean_env
   source /.env
-  # add fqdn to environment
-  echo "export FQDN='"${HOSTNAME}.${DOMAIN}"'" >> /.env
-  export FQDN="${HOSTNAME}.${DOMAIN}"
-  # add linboserver to environment if not set on kernel cl
-  if [ -z "$LINBOSERVER" ]; then
+  # check if school network is present and set further environment accordingly
+  if [ -n "$HOSTGROUP" -o "$HOSTNAME" = "pxeclient" ]; then
     echo "export LINBOSERVER='"${SERVERID}"'" >> /.env
     export LINBOSERVER="${SERVERID}"
+  fi
+  if [ -n "$LINBOSERVER" ]; then
+    # add fqdn to environment
+    echo "export FQDN='"${HOSTNAME}.${DOMAIN}"'" >> /.env
+    export FQDN="${HOSTNAME}.${DOMAIN}"
+  else
+    echo "export LOCALMODE='"yes"'" >> /.env
+    export FQDN="$(linbo_hostname -f)"
+    echo "export FQDN='"$FQDN"'" >> /.env
+    export HOSTNAME="${FQDN%%.*}"
+    echo "export HOSTNAME='"$HOSTNAME"'" >> /.env
+    export DOMAIN="${FQDN/$HOSTNAME./}"
+    echo "export DOMAIN='"$DOMAIN"'" >> /.env
   fi
   # set hostname
   echo "$HOSTNAME" > /etc/hostname
@@ -126,6 +147,8 @@ do_env(){
   # save mac address in enviroment
   export MACADDR="`ifconfig | grep -B1 "$IP" | grep HWaddr | awk '{ print $5 }' | tr A-Z a-z`"
   echo "export MACADDR='"$MACADDR"'" >> /.env
+  clean_env
+  [ -s /tmp/clean_env.log ] && cat /tmp/clean_env.log >> /tmp/linbo.log
 }
 
 # initial setup
@@ -151,8 +174,9 @@ init_setup(){
 
   # load modules from /etc/modules and cmdline
   for i in $(grep -v ^# /etc/modules) $loadmodules; do
+    [ -z "$i" ] && continue
     echo "Loading module $i ..."
-    modprobe "$i"
+    modprobe "$i" || true
   done
 }
 
@@ -333,6 +357,7 @@ do_housekeeping(){
 # update linbo and install it locally
 do_linbo_update(){
   local rebootflag="/tmp/.linbo.reboot"
+  linbo_mountcache
   linbo_update 2>&1 | tee /cache/update.log
   # initiate warm start
   if [ -e "$rebootflag" ]; then
@@ -344,8 +369,8 @@ do_linbo_update(){
 # disable auto functions from cmdline
 disable_auto(){
   sed -e 's|^[Aa][Uu][Tt][Oo][Pp][Aa][Rr][Tt][Ii][Tt][Ii][Oo][Nn].*|AutoPartition = no|g
-         s|^[Aa][Uu][Tt][Oo][Ff][Oo][Rr][Mm][Aa][Tt].*|AutoFormat = no|g
-  s|^[Aa][Uu][Tt][Oo][Ii][Nn][Ii][Tt][Cc][Aa][Cc][Hh][Ee].*|AutoInitCache = no|g' -i /start.conf
+          s|^[Aa][Uu][Tt][Oo][Ff][Oo][Rr][Mm][Aa][Tt].*|AutoFormat = no|g
+          s|^[Aa][Uu][Tt][Oo][Ii][Nn][Ii][Tt][Cc][Aa][Cc][Hh][Ee].*|AutoInitCache = no|g' -i /start.conf
 }
 
 # handle autostart from cmdline
@@ -388,30 +413,37 @@ network(){
   # iterate over ethernet interfaces
   local RC="0"
   local dev
-  local dhcpdev
+  local ipaddr
   [ -z "$dhcpretry" ] && dhcpretry=3
   print_status "Requesting ip address per dhcp (retry=$dhcpretry) ..."
-  for dev in `grep ':' /proc/net/dev | awk -F\: '{ print $1 }' | awk '{ print $1}' | grep -v ^lo`; do
-    print_status "Interface $dev ... "
-    ifconfig "$dev" up &> /dev/null
+  for dev in `grep ':' /proc/net/dev | awk -F\: '{ print $1 }' | awk '{ print $1}' | grep -v ^lo | sort`; do
+    #ifconfig "$dev" up &> /dev/null
+    ip link set dev "$dev" up
+    # skip linkless ethernet interfaces
+    #if [ "${dev:0:1}" = "e" -a "$(cat /sys/class/net/$dev/carrier)" = "0" ]; then
+    #  print_status "Interface $dev: no link detected."
+    #  continue
+    #fi
     # activate wol
     ethtool -s "$dev" wol g &> /dev/null
     # check if using vlan
     if [ -n "$vlanid" ]; then
       print_status "Using vlan id $vlanid."
       vconfig add "$dev" "$vlanid" &> /dev/null
-      dhcpdev="$dev.$vlanid"
-      ip link set dev "$dhcpdev" up
-    else
-      dhcpdev="$dev"
+      dev="$dev.$vlanid"
+      ip link set dev "$dev" up
     fi
-    udhcpc -O nisdomain -n -i "$dhcpdev" -t $dhcpretry &> /dev/null ; RC="$?"
+    # wifi support
+    [ "$dev" = "wlan0" -a -s /etc/wpa_supplicant.conf ] && wpa_supplicant -B -c/etc/wpa_supplicant.conf -iwlan0
+    udhcpc -O nisdomain -n -i "$dev" -t $dhcpretry &> /tmp/linbo.log ; RC="$?"
     if [ "$RC" = "0" ]; then
       # set mtu
       [ -n "$mtu" ] && ifconfig "$dev" mtu $mtu &> /dev/null
+      ipaddr="$(grep ^ip= /tmp/dhcp.log | awk -F\' '{print $2}')"
+      print_status "Interface $dev: got $ipaddr."
       break
     else
-      dhcpdev=""
+      print_status "Interface $dev: no ip."
     fi
   done
   # create environment
@@ -479,12 +511,15 @@ network(){
     gui_ctl disable
   fi
   # split start.conf finally, if it has been changed in the meantime
-  [ -n "$do_split" -a -z "$disablegui" ] && linbo_split_startconf
-  # start ssh server only if network is avalilable
-  if [ -n "$dhcpdev" ]; then
-    print_status "Starting ssh service."
-    /sbin/dropbear -s -g -E -p 2222 &> /dev/null
+  [ -n "$do_split" -a -z "$disablegui" ] && QUIET=yes linbo_split_startconf
+  # get hostgroup from start.conf in offline mode
+  if [ -z "$HOSTGROUP" ]; then
+    [ -s /conf/linbo ] && source /conf/linbo
+    [ -n "$group" ] && echo "export HOSTGROUP='"$group"'" >> /.env
   fi
+  # start dropbear
+  print_status "Starting ssh service."
+  /sbin/dropbear -r /etc/dropbear/dropbear_dss_host_key -r /etc/dropbear/dropbear_rsa_host_key -s -g -E -p 2222 &> /tmp/linbo.log
   # remove reboot flag, save windows activation
   do_housekeeping
   # done
