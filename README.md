@@ -81,8 +81,9 @@ Note:
 ## New kernel parameters
 Parameter  |  Description
 --|--
-nogui  |  Does not start linbo_gui (for debugging purposes), console only mode.
-nowarmstart  |  Suppresses linbo warmstart after downloading a new linbo kernel from the server (in case warmstart causes problems). Note: The old parameter `warmstart=no` is still functional for compatibility reasons.
+`nogui`  |  Does not start linbo_gui (for debugging purposes), console only mode.
+`nowarmstart`  |  Suppresses linbo warmstart after downloading a new linbo kernel from the server (in case warmstart causes problems). Note: The old parameter `warmstart=no` is still functional for compatibility reasons.
+`restoremode`  |  Allows to control the writing performance of qemu-img when restoring whole partitions according to certain storage hardware. `restoremode=dd` uses the dd mode of qemu-img and may improve the writing performance to certain nvme disks. `restoremode=ooo` uses the out-of-order mode of qemu-img. This option may improve performance with other raw block devices.
 
 ## Improved LINBO server scripts
 
@@ -316,6 +317,8 @@ i915 0000:00:02.0: [drm] Failed to load DMC firmware i915/kbl_dmc_ver1_04.bin. D
 i915 0000:00:02.0: [drm] DMC firmware homepage: https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/i915
 ```
 In this case you have to add the line "i915/kbl_dmc_ver1_04.bin" to the firmware configuration file. Finally you have to invoke `update-linbofs` on the server terminal to add the firmware file to the linbofs archive.
+
+Note: If loaded wifi firmware leads to a non functional wifi adapter within a warm booted linux os, switch off warmstart by using the `nowarmstart` kernel option (see above).
 
 ## Wifi support
 From version 4.2.0 Linbo is able to use wireless networks. For this purpose the program [wpa_supplicant](https://w1.fi/wpa_supplicant/) was integrated.

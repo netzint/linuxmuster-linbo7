@@ -1,9 +1,4 @@
-linuxmuster-linbo7 (14.2.13-0) lmn72-testing; urgency=low
-
-  * Merged Upstream-LMN Version 4.2.13-0
-
- -- Lukas Spitznagel <lukas.spitznagel@netzint.de>  Thu, 19 Feb 2024 15:37:29 +0200
-
+<<<<<<< HEAD
 linuxmuster-linbo7 (14.2.12-0) lmn72-testing; urgency=low
 
   * Merged Upstream-LMN Version 4.2.12-0
@@ -88,6 +83,7 @@ linuxmuster-linbo7 (14.1.25-0) lmn72; urgency=low
   * Merged upstream
 
  -- Andreas Till <andreas.till@netzint.de>  Mon, 27 Feb 2023 14:44:56 +0200
+=======
 linuxmuster-linbo7 (4.2.13-0) lmn72; urgency=low
 
   * kernel build fix (508105c). 
@@ -97,6 +93,7 @@ linuxmuster-linbo7 (4.2.13-0) lmn72; urgency=low
   * add restoremode kernel option to control the restore performance of qemu-img (5719b27).
 
  -- Thomas Schmitt <thomas@linuxmuster.net>  Tue, 23 Jan 2024 16:43:52 +0100
+>>>>>>> linuxmuster.net/main
 
 linuxmuster-linbo7 (4.2.12-0) lmn72; urgency=low
 
